@@ -3,14 +3,22 @@ const API_BASE_URL = window.location.hostname === 'localhost' || window.location
     ? 'http://localhost:5005'
     : 'https://printlab1.onrender.com';
 
-// Fallback data
 const fallbackProducts = [
-    { id: 1, name: 'Standard Document', price: 2, icon: 'fa-file-lines', desc: 'A4 size, High-quality 70 GSM paper.', category: 'Document' },
-    { id: 2, name: 'Glossy Poster', price: 45, icon: 'fa-image', desc: 'Premium glossy finish for room decor.', category: 'Posters' },
-    { id: 3, name: 'Business Cards', price: 150, icon: 'fa-address-card', desc: 'Pack of 50. Professional matte finish.', category: 'Stationery' },
-    { id: 4, name: 'Spiral Binding', price: 30, icon: 'fa-book', desc: 'Durable plastic spiral binding.', category: 'Services' },
-    { id: 5, name: 'Thesis Hardcover', price: 450, icon: 'fa-graduation-cap', desc: 'Gold embossed title on premium navy blue.', category: 'Premium' },
-    { id: 6, name: 'Passport Photos', price: 80, icon: 'fa-user-tie', desc: 'Set of 8 high-resolution photos.', category: 'Photos' }
+    { id: 1, name: 'Standard Document', price: 2, icon: 'fa-file-lines', desc: 'High-quality printing for your documents.', category: 'Print' },
+    { id: 2, name: 'Sunboard & Boxboard', price: 50, icon: 'fa-layer-group', desc: 'Sturdy boards for models and presentations.', category: 'Sheets & Boards' },
+    { id: 3, name: 'Acrylic Sheets', price: 120, icon: 'fa-square-full', desc: 'Clear and durable acrylic sheets.', category: 'Sheets & Boards' },
+    { id: 4, name: 'OHP Sheets', price: 10, icon: 'fa-file-image', desc: 'Clear & Coloured OHP sheets.', category: 'Sheets & Boards' },
+    { id: 5, name: 'Cartridge Sheet', price: 5, icon: 'fa-file', desc: 'Premium cartridge sheets.', category: 'Sheets & Boards' },
+    { id: 6, name: 'Cutter (blade)', price: 20, icon: 'fa-pen-nib', desc: 'Sharp cutter for precise cuts.', category: 'Stationery' },
+    { id: 7, name: 'Precision Knife', price: 45, icon: 'fa-pen', desc: 'Craft precision knife.', category: 'Stationery' },
+    { id: 8, name: 'Cutting Mat', price: 150, icon: 'fa-table-cells', desc: 'Self-healing cutting mat.', category: 'Stationery' },
+    { id: 9, name: 'Drawing Board', price: 250, icon: 'fa-clipboard', desc: 'Wooden drawing board.', category: 'Stationery' },
+    { id: 10, name: 'Nose Plier', price: 80, icon: 'fa-wrench', desc: 'Long nose plier.', category: 'Stationery' },
+    { id: 11, name: 'Pliers', price: 75, icon: 'fa-toolbox', desc: 'Standard pliers.', category: 'Stationery' },
+    { id: 12, name: 'Metal Wires', price: 30, icon: 'fa-bars-staggered', desc: 'Aluminum, iron wires for modeling.', category: 'Stationery' },
+    { id: 13, name: 'Mechanical Pencil', price: 40, icon: 'fa-pencil', desc: '0.5mm / 0.7mm mechanical pencil.', category: 'Stationery' },
+    { id: 14, name: 'Staedtler Pencil Colors', price: 350, icon: 'fa-palette', desc: 'Premium colored pencils.', category: 'Stationery' },
+    { id: 15, name: 'Alcohol Markers', price: 600, icon: 'fa-highlighter', desc: 'Set of alcohol-based markers.', category: 'Stationery' }
 ];
 
 // State Management
@@ -149,11 +157,14 @@ function filterProducts(category) {
     // Update active hex badge
     const badges = document.querySelectorAll('.category-hex');
     badges.forEach(badge => {
-        const spanText = badge.querySelector('span').innerText.toLowerCase();
-        const categoryMatch = (category === 'All' && spanText.includes('all')) ||
-            (category === 'Document' && spanText.includes('completes')) ||
-            (category === 'Posters' && spanText.includes('complex')) ||
-            (category === 'Stationery' && spanText.includes('fast'));
+        const spanText = badge.querySelector('span').innerText.toLowerCase().replace('\n', ' ');
+        const catLower = category.toLowerCase();
+        
+        const categoryMatch = 
+            (category === 'All' && spanText === 'all') ||
+            (category === 'Print' && spanText === 'print') ||
+            (category === 'Sheets & Boards' && spanText === 'sheets & boards') ||
+            (category === 'Stationery' && spanText === 'stationery');
 
         if (categoryMatch) {
             badge.classList.add('active');
@@ -229,6 +240,121 @@ function openProductDetail(productId) {
     state.selectedProduct = product;
     state.tempQty = 1;
 
+    let dynamicOptions = '';
+    
+    if (product.category === 'Print') {
+        dynamicOptions = `
+            <div class="product-options" style="margin-top: 1.5rem;">
+                <div class="form-group">
+                    <label>Paper Type</label>
+                    <select id="opt-paper" class="form-control">
+                        <option value="Photo paper">Photo paper</option>
+                        <option value="Bond paper">Bond paper</option>
+                        <option value="High quality print">High quality print</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Size</label>
+                    <select id="opt-size" class="form-control">
+                        <option value="A5">A5</option>
+                        <option value="A4">A4</option>
+                        <option value="A3">A3</option>
+                        <option value="A2">A2</option>
+                        <option value="A1">A1</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Finish</label>
+                    <select id="opt-finish" class="form-control">
+                        <option value="Glossy">Glossy</option>
+                        <option value="Matte">Matte</option>
+                    </select>
+                </div>
+            </div>
+        `;
+    } else if (product.category === 'Sheets & Boards') {
+        if (product.name.includes('Sunboard') || product.name.includes('Boxboard')) {
+            dynamicOptions = `
+                <div class="product-options" style="margin-top: 1.5rem;">
+                    <div class="form-group">
+                        <label>Size</label>
+                        <select id="opt-size" class="form-control">
+                            <option value="A2">A2</option>
+                            <option value="A1">A1</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Thickness/GSM</label>
+                        <select id="opt-thickness" class="form-control">
+                            <option value="2mm">2mm</option>
+                            <option value="3mm">3mm</option>
+                            <option value="4mm">4mm</option>
+                            <option value="5mm">5mm</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+        } else if (product.name.includes('Acrylic')) {
+            dynamicOptions = `
+                <div class="product-options" style="margin-top: 1.5rem;">
+                    <div class="form-group">
+                        <label>Size</label>
+                        <select id="opt-size" class="form-control">
+                            <option value="A4">A4</option>
+                            <option value="A3">A3</option>
+                            <option value="A2">A2</option>
+                            <option value="A1">A1</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Thickness</label>
+                        <select id="opt-thickness" class="form-control">
+                            <option value="2mm">2mm</option>
+                            <option value="3mm">3mm</option>
+                            <option value="4mm">4mm</option>
+                            <option value="5mm">5mm</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+        } else if (product.name.includes('OHP')) {
+            dynamicOptions = `
+                <div class="product-options" style="margin-top: 1.5rem;">
+                    <div class="form-group">
+                        <label>Size</label>
+                        <select id="opt-size" class="form-control">
+                            <option value="A4">A4</option>
+                            <option value="A3">A3</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Thickness</label>
+                        <select id="opt-thickness" class="form-control">
+                            <option value="1mm">1mm</option>
+                            <option value="2mm">2mm</option>
+                            <option value="3mm">3mm</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+        } else {
+            dynamicOptions = `
+                <div class="product-options" style="margin-top: 1.5rem;">
+                    <div class="form-group">
+                        <label>Size</label>
+                        <select id="opt-size" class="form-control">
+                            <option value="A5">A5</option>
+                            <option value="A4">A4</option>
+                            <option value="A3">A3</option>
+                            <option value="A2">A2</option>
+                            <option value="A1">A1</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+        }
+    }
+
     const detailContent = document.getElementById('product-detail-content');
     detailContent.innerHTML = `
         <div class="detail-img-large">
@@ -239,7 +365,9 @@ function openProductDetail(productId) {
             <h2 style="font-weight: 900; letter-spacing: -1px;">${product.name}</h2>
             <p class="detail-desc">${product.desc}</p>
             
-            <div class="quantity-selector">
+            ${dynamicOptions}
+
+            <div class="quantity-selector" style="margin-top: 1.5rem;">
                 <button class="qty-btn" onclick="updateTempQty(-1)"><i class="fa-solid fa-minus"></i></button>
                 <span class="qty-value" id="qty-val">1</span>
                 <button class="qty-btn" onclick="updateTempQty(1)"><i class="fa-solid fa-plus"></i></button>
@@ -251,7 +379,7 @@ function openProductDetail(productId) {
             </div>
 
             <div class="magnetic-btn-wrap">
-                <button class="btn-add" onclick="addToCart(event)">Add to Order</button>
+                <button class="btn-add" onclick="addToCart(event)">Add to Cart</button>
             </div>
         </div>
     `;
@@ -267,13 +395,42 @@ function updateTempQty(change) {
 
 // --- Cart Logic ---
 function addToCart(e) {
-    const existingItem = state.cart.find(item => item.id === state.selectedProduct.id);
+    let selectedOptions = [];
+    let optionsKey = '';
+
+    const paperEl = document.getElementById('opt-paper');
+    if (paperEl) {
+        selectedOptions.push(paperEl.value);
+        optionsKey += `|paper:${paperEl.value}`;
+    }
+    const sizeEl = document.getElementById('opt-size');
+    if (sizeEl) {
+        selectedOptions.push(`Size: ${sizeEl.value}`);
+        optionsKey += `|size:${sizeEl.value}`;
+    }
+    const finishEl = document.getElementById('opt-finish');
+    if (finishEl) {
+        selectedOptions.push(`Finish: ${finishEl.value}`);
+        optionsKey += `|finish:${finishEl.value}`;
+    }
+    const thickEl = document.getElementById('opt-thickness');
+    if (thickEl) {
+        selectedOptions.push(`GSM/Thick: ${thickEl.value}`);
+        optionsKey += `|thick:${thickEl.value}`;
+    }
+
+    const itemDesc = selectedOptions.join(', ');
+    const uniqueId = state.selectedProduct.id + optionsKey;
+
+    const existingItem = state.cart.find(item => item.cartId === uniqueId);
 
     if (existingItem) {
         existingItem.qty += state.tempQty;
     } else {
         state.cart.push({
             ...state.selectedProduct,
+            cartId: uniqueId,
+            itemDesc: itemDesc,
             qty: state.tempQty
         });
     }
@@ -401,18 +558,19 @@ function renderCartItems(containerId) {
             </div>
             <div class="cart-item-info" style="flex-grow: 1;">
                 <h4 style="font-weight: 600; font-size: 1rem; margin-bottom: 0.25rem;">${item.name}</h4>
+                ${item.itemDesc ? `<p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.25rem;">${item.itemDesc}</p>` : ''}
                 <p style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;">₹${item.price} x ${item.qty}</p>
             </div>
             <div style="cursor: pointer; color: var(--accent-coral); padding: 0.5rem;" 
-                 onclick="removeFromCart('${item.id}')">
+                 onclick="removeFromCart('${item.cartId || item.id}')">
                 <i class="fa-solid fa-circle-xmark" style="font-size: 1.2rem;"></i>
             </div>
         </div>
     `).join('');
 }
 
-function removeFromCart(productId) {
-    state.cart = state.cart.filter(item => String(item.id) !== String(productId));
+function removeFromCart(cartId) {
+    state.cart = state.cart.filter(item => (item.cartId || String(item.id)) !== String(cartId));
     saveToStorage();
     updateCartUI();
 }
