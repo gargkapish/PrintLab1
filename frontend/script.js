@@ -1,7 +1,7 @@
 // Environment Config
 const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://localhost:5005'
-    : 'https://your-render-app.onrender.com';
+    : 'https://printlab1.onrender.com';
 
 // Fallback data
 const fallbackProducts = [
