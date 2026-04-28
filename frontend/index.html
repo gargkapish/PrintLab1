@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrintLab | High-Fidelity Campus Printing</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- Mobile Header -->
+        <header class="mobile-header">
+            <div class="logo">PrintLab</div>
+            <div class="cart-trigger" onclick="showScreen('cart')">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <span id="mobile-cart-count">0</span>
+            </div>
+        </header>
+
+        <!-- Sidebar Navigation (Desktop) -->
+        <aside class="sidebar">
+            <div class="logo">PrintLab</div>
+            <ul class="nav-links">
+                <li class="nav-item active" onclick="showScreen('home')" id="nav-home">
+                    <i class="fa-solid fa-house"></i>
+                    Home
+                </li>
+                <li class="nav-item" onclick="showScreen('status')" id="nav-status">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    Orders
+                </li>
+                <li class="nav-item" onclick="showScreen('credits')" id="nav-credits">
+                    <i class="fa-solid fa-wallet"></i>
+                    Credits
+                </li>
+                <li class="nav-item" onclick="showScreen('settings')" id="nav-settings">
+                    <i class="fa-solid fa-gear"></i>
+                    Settings
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- Home Screen -->
+            <div id="home-screen" class="screen active">
+                <div class="bento-hero">
+                    <div class="bento-tile bento-main">
+                        <div class="bento-label" style="color: rgba(255,255,255,0.7);">Campus Exclusive</div>
+                        <h1>Rush Printing,<br>Simplified.</h1>
+                        <p style="margin-top: 1rem; opacity: 0.8; font-weight: 600;">High-fidelity prints delivered in minutes.</p>
+                    </div>
+                    <div class="bento-tile bento-secondary">
+                        <div class="bento-label">Live Capacity</div>
+                        <div class="bento-value">92% Operational</div>
+                        <div style="width: 100%; height: 6px; background: var(--bg-color); border-radius: 10px; margin-top: 1rem; overflow: hidden;">
+                            <div style="width: 92%; height: 100%; background: var(--primary-teal);"></div>
+                        </div>
+                    </div>
+                    <div class="bento-tile bento-secondary">
+                        <div class="bento-label">Est. Queue</div>
+                        <div class="bento-value">~14 Mins</div>
+                    </div>
+                </div>
+
+                <div class="categories-container" id="category-filters">
+                    <div class="category-hex active" onclick="filterProducts('All')">
+                        <i class="fa-solid fa-layer-group"></i>
+                        <span>All<br>Prints</span>
+                    </div>
+                    <div class="category-hex" onclick="filterProducts('Document')">
+                        <i class="fa-solid fa-cat"></i>
+                        <span>Completes<br>Printing</span>
+                    </div>
+                    <div class="category-hex" onclick="filterProducts('Posters')">
+                        <i class="fa-solid fa-paw"></i>
+                        <span>Complex<br>Printing</span>
+                    </div>
+                    <div class="category-hex" onclick="filterProducts('Stationery')">
+                        <i class="fa-solid fa-bolt"></i>
+                        <span>Fast<br>Printing</span>
+                    </div>
+                </div>
+
+                <div class="product-grid" id="product-grid">
+                    <!-- Products injected here -->
+                </div>
+            </div>
+
+            <!-- Product Detail Screen -->
+            <div id="detail-screen" class="screen">
+                <div class="back-btn" onclick="showScreen('home')" style="cursor: pointer; margin-bottom: 2rem; font-weight: 700;">
+                    <i class="fa-solid fa-chevron-left"></i> Back
+                </div>
+                <div class="detail-container" id="product-detail-content"></div>
+            </div>
+
+            <!-- Order Status Screen -->
+            <div id="status-screen" class="screen">
+                <div class="bento-tile" style="max-width: 600px; margin: 0 auto; text-align: center; padding: 4rem;">
+                    <h2>Tracking Order #PL-2024</h2>
+                    <p style="color: var(--text-muted); margin-top: 1rem;">Est. completion: 15 mins</p>
+                    <div style="margin-top: 3rem;">
+                        <div class="progress-bar-bg" style="height: 12px;">
+                            <div class="progress-bar-fill" id="status-progress-bar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                    <h3 style="margin-top: 2rem; color: var(--primary-teal);" id="status-text">Order Placed</h3>
+                </div>
+            </div>
+
+            <!-- Cart Screen (Mobile) -->
+            <div id="cart-screen" class="screen">
+                <h2 class="cart-title">Your Cart</h2>
+                <div class="cart-items" id="mobile-cart-items"></div>
+                <div id="mobile-cart-footer"></div>
+            </div>
+
+            <!-- Credits Screen -->
+            <div id="credits-screen" class="screen">
+                <div class="bento-hero" style="flex-direction: column; text-align: center;">
+                    <div class="bento-tile bento-main" style="width: 100%; max-width: 600px; margin: 0 auto;">
+                        <div class="bento-label">Current Balance</div>
+                        <h1 style="font-size: 3rem; margin-top: 1rem;">₹500.00</h1>
+                        <p style="margin-top: 1rem; opacity: 0.8; font-weight: 600;">Linked to Campus ID: ************4092</p>
+                        <div style="margin-top: 2rem;">
+                            <button class="btn-checkout" onclick="showToast('Recharge gateway coming soon!')" style="max-width: 200px; margin: 0 auto;">Add Funds</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <h2 style="margin-top: 3rem; margin-bottom: 1.5rem; text-align: center;">Recent Transactions</h2>
+                <div style="max-width: 600px; margin: 0 auto;">
+                    <div class="bento-tile" style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="font-weight: 600;">Order #PL-2024</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-muted);">Today, 10:42 AM</p>
+                        </div>
+                        <div style="color: var(--accent-coral); font-weight: 700;">-₹130</div>
+                    </div>
+                    <div class="bento-tile" style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="font-weight: 600;">Wallet Top-up</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-muted);">Yesterday, 4:15 PM</p>
+                        </div>
+                        <div style="color: var(--primary-teal); font-weight: 700;">+₹500</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Screen -->
+            <div id="settings-screen" class="screen">
+                <div style="max-width: 600px; margin: 0 auto; padding-top: 2rem;">
+                    <h2 style="margin-bottom: 2rem; text-align: center;">Account Settings</h2>
+                    
+                    <div class="bento-tile" style="margin-bottom: 2rem;">
+                        <h3 style="margin-bottom: 1.5rem; font-size: 1.2rem;">Profile Details</h3>
+                        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                            <div>
+                                <label style="font-size: 0.9rem; color: var(--text-muted);">Full Name</label>
+                                <div style="font-weight: 600; margin-top: 0.3rem; font-size: 1.1rem;">Alex Student</div>
+                            </div>
+                            <div>
+                                <label style="font-size: 0.9rem; color: var(--text-muted);">Email Address</label>
+                                <div style="font-weight: 600; margin-top: 0.3rem; font-size: 1.1rem;">alex@campus.edu</div>
+                            </div>
+                        </div>
+                        <button class="btn-checkout" style="margin-top: 2rem; max-width: 150px; background: transparent; border: 2px solid var(--primary-teal); color: var(--primary-teal);" onclick="showToast('Profile editing coming soon!')">Edit Profile</button>
+                    </div>
+
+                    <div class="bento-tile" style="margin-bottom: 2rem;">
+                        <h3 style="margin-bottom: 1.5rem; font-size: 1.2rem;">Preferences</h3>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid rgba(0,0,0,0.1);">
+                            <div>
+                                <h4 style="font-weight: 600;">Email Notifications</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">Receive updates about your orders</p>
+                            </div>
+                            <div>
+                                <div style="width: 44px; height: 24px; background: var(--primary-teal); border-radius: 12px; position: relative; cursor: pointer;" onclick="this.style.background = this.style.background === 'var(--text-muted)' ? 'var(--primary-teal)' : 'var(--text-muted)'">
+                                    <div style="width: 20px; height: 20px; background: white; border-radius: 50%; position: absolute; top: 2px; right: 2px; pointer-events: none;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 3rem;">
+                        <p style="color: var(--accent-coral); font-weight: 600; cursor: pointer; display: inline-block; padding: 0.5rem 1rem;" onclick="showToast('Logged out successfully!')">Log Out</p>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Floating Cart Sidebar -->
+        <aside class="cart-sidebar">
+            <div class="cart-title">Your Cart</div>
+            
+            <div class="cart-progress-container">
+                <div class="progress-label">
+                    <span>Pickup Ready</span>
+                    <span id="progress-pct">0%</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="cart-progress-bar"></div>
+                </div>
+            </div>
+
+            <div class="cart-items" id="desktop-cart-items">
+                <!-- Items injected here -->
+            </div>
+
+            <div class="cart-footer">
+                <div class="cart-row">
+                    <span>Subtotal</span>
+                    <span id="subtotal">₹0</span>
+                </div>
+                <div class="cart-row">
+                    <span>Svc Fee</span>
+                    <span id="fee">₹0</span>
+                </div>
+                <div class="cart-row total-row">
+                    <span>Total</span>
+                    <span id="total">₹0</span>
+                </div>
+                <button class="btn-checkout" onclick="placeOrder()">Place Order</button>
+            </div>
+        </aside>
+
+        <!-- Bottom Navigation (Mobile) -->
+        <nav class="bottom-nav">
+            <div class="nav-item active" onclick="showScreen('home')">
+                <i class="fa-solid fa-house"></i>
+            </div>
+            <div class="nav-item" onclick="showScreen('cart')">
+                <i class="fa-solid fa-bag-shopping"></i>
+            </div>
+            <div class="nav-item" onclick="showScreen('status')">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+        </nav>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
