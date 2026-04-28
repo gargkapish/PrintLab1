@@ -13,7 +13,7 @@ exports.getProducts = async (req, res) => {
 
 exports.createOrder = async (req, res) => {
   try {
-    const { items, total } = req.body;
+    const { items, total, customerName, customerMobile } = req.body;
     
     if (!items || items.length === 0) {
       return res.status(400).json({ error: 'Order must contain items' });
@@ -21,7 +21,12 @@ exports.createOrder = async (req, res) => {
 
     const { data, error } = await supabase
       .from('orders')
-      .insert([{ items, total }])
+      .insert([{ 
+        items, 
+        total,
+        customer_name: customerName,
+        customer_mobile: customerMobile
+      }])
       .select()
       .single();
 

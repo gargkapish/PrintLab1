@@ -16,6 +16,8 @@ CREATE TABLE orders (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   items JSONB NOT NULL,
   total INT NOT NULL,
+  customer_name TEXT,
+  customer_mobile TEXT,
   status TEXT DEFAULT 'placed',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );

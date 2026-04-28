@@ -27,12 +27,44 @@ const state = {
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
+    initDarkMode();
     simulateLoading();
     updateCartUI();
     initFunkyFeatures();
     startTypedTagline();
     initMagneticButtons();
 });
+
+function initDarkMode() {
+    const isDark = localStorage.getItem('printlab_dark') === 'true';
+    if (isDark) {
+        document.body.classList.add('dark-mode');
+        updateDarkIcons(true);
+    }
+}
+
+function toggleDarkMode() {
+    const isDark = document.body.classList.toggle('dark-mode');
+    localStorage.setItem('printlab_dark', isDark);
+    updateDarkIcons(isDark);
+}
+
+function updateDarkIcons(isDark) {
+    const mobileIcon = document.getElementById('mobile-dark-icon');
+    const desktopIcon = document.getElementById('desktop-dark-icon');
+    const desktopText = document.getElementById('desktop-dark-text');
+    
+    if (isDark) {
+        if (mobileIcon) { mobileIcon.classList.remove('fa-moon'); mobileIcon.classList.add('fa-sun'); }
+        if (desktopIcon) { desktopIcon.classList.remove('fa-moon'); desktopIcon.classList.add('fa-sun'); }
+        if (desktopText) desktopText.innerText = 'Light Mode';
+    } else {
+        if (mobileIcon) { mobileIcon.classList.remove('fa-sun'); mobileIcon.classList.add('fa-moon'); }
+        if (desktopIcon) { desktopIcon.classList.remove('fa-sun'); desktopIcon.classList.add('fa-moon'); }
+        if (desktopText) desktopText.innerText = 'Dark Mode';
+    }
+}
+
 
 async function simulateLoading() {
     state.isLoading = true;
@@ -264,7 +296,10 @@ function triggerFlyingParticle(e) {
     const startY = e.clientY;
 
     // Target: Cart badge/sidebar area
-    const target = document.getElementById('cart-count-badge').getBoundingClientRect();
+    let targetEl = document.getElementById('cart-count-badge') || document.getElementById('mobile-cart-count') || document.querySelector('.cart-sidebar');
+    if (!targetEl) return; // Silent fail if no target exists
+
+    const target = targetEl.getBoundingClientRect();
     const endX = target.left + target.width / 2;
     const endY = target.top + target.height / 2;
 
@@ -406,20 +441,35 @@ function calculateTotals() {
                 <div class="cart-row"><span>Subtotal</span><span>₹${subtotal}</span></div>
                 <div class="cart-row"><span>Svc Fee</span><span>₹${fee}</span></div>
                 <div class="cart-row total-row"><span>Total</span><span>₹${total}</span></div>
-                <button class="btn-checkout" onclick="placeOrder()">Place Order</button>
+                <button class="btn-checkout" onclick="openCheckoutModal()">Place Order</button>
             </div>
         `;
     }
 }
 
-// --- Order Logic ---
-async function placeOrder() {
+// --- Checkout Logic ---
+function openCheckoutModal() {
     if (state.cart.length === 0) {
         showToast("Your cart is empty!");
         return;
     }
+    document.getElementById('checkout-modal').classList.add('active');
+}
 
-    const orderBtn = document.querySelector('.btn-checkout');
+function closeCheckoutModal() {
+    document.getElementById('checkout-modal').classList.remove('active');
+}
+
+async function confirmOrder(e) {
+    const nameInput = document.getElementById('checkout-name').value.trim();
+    const mobileInput = document.getElementById('checkout-mobile').value.trim();
+
+    if (!nameInput || !mobileInput) {
+        showToast("Please enter your Name and Mobile Number.");
+        return;
+    }
+
+    const orderBtn = document.getElementById('confirm-btn');
     if (orderBtn) orderBtn.innerText = 'Placing...';
 
     const subtotal = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
@@ -430,7 +480,12 @@ async function placeOrder() {
         const response = await fetch(`${API_BASE_URL}/orders`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ items: state.cart, total: total })
+            body: JSON.stringify({ 
+                items: state.cart, 
+                total: total,
+                customerName: nameInput,
+                customerMobile: mobileInput
+            })
         });
 
         if (!response.ok) throw new Error('Failed to place order');
@@ -442,7 +497,8 @@ async function placeOrder() {
         state.currentOrderId = 'PL-' + Math.floor(Math.random() * 10000);
     }
 
-    if (orderBtn) orderBtn.innerText = 'Place Order';
+    if (orderBtn) orderBtn.innerText = 'Confirm Order';
+    closeCheckoutModal();
 
     // Create Confetti
     createConfetti();
