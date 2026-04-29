@@ -102,3 +102,22 @@ exports.cancelOrder = async (req, res) => {
   }
 };
 
+exports.getUserOrders = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    
+    const { data, error } = await supabase
+      .from('orders')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    res.json(data);
+  } catch (err) {
+    console.error('Error fetching user orders:', err);
+    res.status(500).json({ error: 'Failed to fetch order history' });
+  }
+};
+
+

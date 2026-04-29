@@ -14,8 +14,11 @@ router.post('/orders', apiController.createOrder);
 
 // GET /orders/:id
 router.get('/orders/:id', apiController.getOrderStatus);
+// GET /orders/user/:userId
+router.get('/orders/user/:userId', apiController.getUserOrders);
 // PATCH /orders/:id/cancel
 router.patch('/orders/:id/cancel', apiController.cancelOrder);
+
 
 
 module.exports = router;

@@ -10,22 +10,26 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_
 
 
 const fallbackProducts = [
-    { id: 1, name: 'Standard Document', price: 2, icon: 'fa-file-lines', desc: 'High-quality printing for your documents.', category: 'Print' },
-    { id: 2, name: 'Sunboard & Boxboard', price: 50, icon: 'fa-layer-group', desc: 'Sturdy boards for models and presentations.', category: 'Sheets & Boards' },
-    { id: 3, name: 'Acrylic Sheets', price: 120, icon: 'fa-square-full', desc: 'Clear and durable acrylic sheets.', category: 'Sheets & Boards' },
-    { id: 4, name: 'OHP Sheets', price: 10, icon: 'fa-file-image', desc: 'Clear & Coloured OHP sheets.', category: 'Sheets & Boards' },
-    { id: 5, name: 'Cartridge Sheet', price: 5, icon: 'fa-file', desc: 'Premium cartridge sheets.', category: 'Sheets & Boards' },
-    { id: 6, name: 'Cutter (blade)', price: 20, icon: 'fa-pen-nib', desc: 'Sharp cutter for precise cuts.', category: 'Stationery' },
-    { id: 7, name: 'Precision Knife', price: 45, icon: 'fa-pen', desc: 'Craft precision knife.', category: 'Stationery' },
-    { id: 8, name: 'Cutting Mat', price: 150, icon: 'fa-table-cells', desc: 'Self-healing cutting mat.', category: 'Stationery' },
-    { id: 9, name: 'Drawing Board', price: 250, icon: 'fa-clipboard', desc: 'Wooden drawing board.', category: 'Stationery' },
-    { id: 10, name: 'Nose Plier', price: 80, icon: 'fa-wrench', desc: 'Long nose plier.', category: 'Stationery' },
-    { id: 11, name: 'Pliers', price: 75, icon: 'fa-toolbox', desc: 'Standard pliers.', category: 'Stationery' },
-    { id: 12, name: 'Metal Wires', price: 30, icon: 'fa-bars-staggered', desc: 'Aluminum, iron wires for modeling.', category: 'Stationery' },
-    { id: 13, name: 'Mechanical Pencil', price: 40, icon: 'fa-pencil', desc: '0.5mm / 0.7mm mechanical pencil.', category: 'Stationery' },
-    { id: 14, name: 'Staedtler Pencil Colors', price: 350, icon: 'fa-palette', desc: 'Premium colored pencils.', category: 'Stationery' },
-    { id: 15, name: 'Alcohol Markers', price: 600, icon: 'fa-highlighter', desc: 'Set of alcohol-based markers.', category: 'Stationery' }
+    { id: 1, name: 'Standard Document', price: 2, icon: 'fa-file-lines', image: 'standard_document_printlab_1777451849704.png', desc: 'High-quality printing for your documents.', category: 'Print' },
+    { id: 2, name: 'Sunboard & Boxboard', price: 50, icon: 'fa-layer-group', image: 'sunboard_printlab_1777452528921.png', desc: 'Sturdy boards for models and presentations.', category: 'Sheets & Boards' },
+    { id: 3, name: 'Acrylic Sheets', price: 120, icon: 'fa-square-full', image: 'acrylic_sheets_printlab_1777452544512.png', desc: 'Clear and durable acrylic sheets.', category: 'Sheets & Boards' },
+
+    { id: 4, name: 'OHP Sheets', price: 10, icon: 'fa-file-image', image: 'https://images.unsplash.com/photo-1517148818476-75ff57a92744?q=80&w=800', desc: 'Clear & Coloured OHP sheets.', category: 'Sheets & Boards' },
+    { id: 5, name: 'Cartridge Sheet', price: 5, icon: 'fa-file', image: 'https://images.unsplash.com/photo-1603484477859-abe6a73f9366?q=80&w=800', desc: 'Premium cartridge sheets.', category: 'Sheets & Boards' },
+
+
+    { id: 6, name: 'Cutter (blade)', price: 20, icon: 'fa-pen-nib', image: 'cutter_blade_printlab_1777451955366.png', desc: 'Sharp cutter for precise cuts.', category: 'Stationery' },
+    { id: 7, name: 'Precision Knife', price: 45, icon: 'fa-pen', image: 'precision_knife_printlab_1777451970860.png', desc: 'Craft precision knife.', category: 'Stationery' },
+    { id: 8, name: 'Cutting Mat', price: 150, icon: 'fa-table-cells', image: 'cutting_mat_printlab_1777451992827.png', desc: 'Self-healing cutting mat.', category: 'Stationery' },
+    { id: 9, name: 'Drawing Board', price: 250, icon: 'fa-clipboard', image: 'drawing_board_printlab_1777452009054.png', desc: 'Wooden drawing board.', category: 'Stationery' },
+    { id: 10, name: 'Nose Plier', price: 80, icon: 'fa-wrench', image: 'nose_plier_printlab_1777452024155.png', desc: 'Long nose plier.', category: 'Stationery' },
+    { id: 11, name: 'Pliers', price: 75, icon: 'fa-toolbox', image: 'pliers_printlab_1777452091069.png', desc: 'Standard pliers.', category: 'Stationery' },
+    { id: 12, name: 'Metal Wires', price: 30, icon: 'fa-bars-staggered', image: 'metal_wires_printlab_1777452106497.png', desc: 'Aluminum, iron wires for modeling.', category: 'Stationery' },
+    { id: 13, name: 'Mechanical Pencil', price: 40, icon: 'fa-pencil', image: 'mechanical_pencil_printlab_1777452126326.png', desc: '0.5mm / 0.7mm mechanical pencil.', category: 'Stationery' },
+    { id: 14, name: 'Staedtler Pencil Colors', price: 350, icon: 'fa-palette', image: 'staedtler_pencils_printlab_1777452144057.png', desc: 'Premium colored pencils.', category: 'Stationery' },
+    { id: 15, name: 'Alcohol Markers', price: 600, icon: 'fa-highlighter', image: 'alcohol_markers_printlab_1777452159013.png', desc: 'Set of alcohol-based markers.', category: 'Stationery' }
 ];
+
 
 // State Management
 const state = {
@@ -93,13 +97,28 @@ function handleAuthState(session) {
 
 
 async function loginWithGoogle() {
-    await supabaseClient.auth.signInWithOAuth({
-        provider: 'google',
-        options: { 
-            redirectTo: window.location.href // Redirect back to exactly where we are (including /frontend/)
-        }
-    });
+    console.log("Login with Google triggered...");
+    const btn = event.currentTarget;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Connecting...';
+    btn.style.pointerEvents = 'none';
+
+    try {
+        const { error } = await supabaseClient.auth.signInWithOAuth({
+            provider: 'google',
+            options: { 
+                redirectTo: window.location.href 
+            }
+        });
+        if (error) throw error;
+    } catch (err) {
+        console.error("Login Error:", err);
+        showToast("Login failed. Check console.");
+        btn.innerHTML = originalText;
+        btn.style.pointerEvents = 'auto';
+    }
 }
+
 
 
 
@@ -130,10 +149,17 @@ async function completeProfile() {
     const username = document.getElementById('profile-username').value.trim();
     const phone = document.getElementById('profile-phone').value.trim();
 
+    // Validation: 10 digit numeric
+    const phoneRegex = /^[0-9]{10,}$/;
     if (!username || !phone) {
         showToast("Username and Phone are required.");
         return;
     }
+    if (!phoneRegex.test(phone)) {
+        showToast("Please enter a valid numeric mobile number (at least 10 digits).");
+        return;
+    }
+
 
     try {
         const response = await fetch(`${API_BASE_URL}/users`, {
@@ -270,8 +296,11 @@ function showScreen(screenId) {
     // Special Logic for Screens
     if (screenId === 'status') {
         triggerStatusAnimation();
+    } else if (screenId === 'transactions') {
+        fetchUserOrders();
     }
 }
+
 
 // --- Home Screen Logic ---
 function filterProducts(category) {
@@ -310,7 +339,10 @@ function renderProductGrid() {
     grid.innerHTML = filteredProducts.map(product => `
         <div class="product-card" onclick="openProductDetail('${product.id}')">
             <div class="product-img">
-                <i class="fa-solid ${product.icon} text-teal"></i>
+                ${product.image 
+                    ? `<img src="${product.image}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">`
+                    : `<i class="fa-solid ${product.icon} text-teal"></i>`
+                }
             </div>
             <div class="product-info">
                 <h3>${product.name}</h3>
@@ -318,6 +350,7 @@ function renderProductGrid() {
             </div>
         </div>
     `).join('');
+
 
     // Trigger Entrance Animation
     const cards = grid.querySelectorAll('.product-card');
@@ -481,7 +514,10 @@ function openProductDetail(productId) {
     const detailContent = document.getElementById('product-detail-content');
     detailContent.innerHTML = `
         <div class="detail-img-large">
-            <i class="fa-solid ${product.icon} text-teal"></i>
+            ${product.image 
+                ? `<img src="${product.image}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px;">`
+                : `<i class="fa-solid ${product.icon} text-teal"></i>`
+            }
         </div>
         <div class="detail-info">
             <span class="stat-label">${product.category}</span>
@@ -506,6 +542,7 @@ function openProductDetail(productId) {
             </div>
         </div>
     `;
+
 
     showScreen('detail');
 }
@@ -757,17 +794,35 @@ async function confirmOrder(e) {
     const nameInput = document.getElementById('checkout-name').value.trim();
     const mobileInput = document.getElementById('checkout-mobile').value.trim();
 
+    // Validation: 10 digit numeric
+    const phoneRegex = /^[0-9]{10,}$/;
     if (!nameInput || !mobileInput) {
         showToast("Please enter your Name and Mobile Number.");
         return;
     }
+    if (!phoneRegex.test(mobileInput)) {
+        showToast("Please enter a valid numeric mobile number (at least 10 digits).");
+        return;
+    }
+
+
+    // Validation: Min Order ₹500
+    const subtotal = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    if (subtotal < 500) {
+        document.getElementById('checkout-min-notice').style.display = 'block';
+        showToast("Minimum order value is ₹500");
+        return;
+    } else {
+        document.getElementById('checkout-min-notice').style.display = 'none';
+    }
 
     const orderBtn = document.getElementById('confirm-btn');
+
     if (orderBtn) orderBtn.innerText = 'Placing...';
 
-    const subtotal = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
     const fee = subtotal > 0 ? 10 : 0;
     const total = subtotal + fee;
+
 
     try {
         const response = await fetch(`${API_BASE_URL}/orders`, {
@@ -938,4 +993,74 @@ function initMagneticButtons() {
             }
         });
     });
+}
+
+// --- Transactions & Order History ---
+async function fetchUserOrders() {
+    if (!state.user) return;
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/orders/user/${state.user.id}`);
+        const orders = await response.json();
+        renderTransactionsTable(orders);
+    } catch (err) {
+        console.error('Error fetching orders:', err);
+        showToast("Failed to load order history.");
+    }
+}
+
+function renderTransactionsTable(orders) {
+    const list = document.getElementById('transaction-list');
+    if (!list) return;
+
+    if (orders.length === 0) {
+        list.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 3rem; color: var(--text-muted);">No transactions yet.</td></tr>`;
+        return;
+    }
+
+    list.innerHTML = orders.map(order => {
+        const date = new Date(order.created_at).toLocaleDateString('en-IN', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric'
+        });
+
+        return `
+            <tr>
+                <td>${date}</td>
+                <td>₹${order.total_amount}</td>
+                <td><span class="status-badge status-${order.status.toLowerCase()}">${order.status}</span></td>
+                <td>
+                    <button class="btn-reorder" onclick="reorderItems('${order.id}')">Re-order</button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+async function reorderItems(orderId) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/orders/${orderId}`);
+        const order = await response.json();
+        
+        if (order && order.items) {
+            order.items.forEach(item => {
+                // Add to state.cart
+                const existing = state.cart.find(c => c.id === item.id && JSON.stringify(c.options) === JSON.stringify(item.options));
+                if (existing) {
+                    existing.quantity += item.quantity;
+                } else {
+                    state.cart.push(item);
+                }
+            });
+            
+            localStorage.setItem('printlab_cart', JSON.stringify(state.cart));
+            updateCartUI();
+            showToast("Items added to cart!");
+            showScreen('home');
+        }
+    } catch (err) {
+        console.error('Error reordering:', err);
+        showToast("Failed to re-order items.");
+    }
 }

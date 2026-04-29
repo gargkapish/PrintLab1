@@ -43,10 +43,11 @@
                     <i class="fa-solid fa-clock-rotate-left"></i>
                     Orders
                 </li>
-                <li class="nav-item" onclick="showScreen('credits')" id="nav-credits">
-                    <i class="fa-solid fa-wallet"></i>
-                    Credits
+                <li class="nav-item" onclick="showScreen('transactions')" id="nav-transactions">
+                    <i class="fa-solid fa-receipt"></i>
+                    Transactions
                 </li>
+
                 <li class="nav-item" onclick="showScreen('settings')" id="nav-settings">
                     <i class="fa-solid fa-gear"></i>
                     Settings
@@ -145,6 +146,33 @@
                     <button class="btn-checkout" onclick="showScreen('home')" style="max-width: 200px; margin: 0 auto;">Browse Products</button>
                 </div>
             </div>
+ 
+ 
+             <!-- Transactions Screen -->
+             <div id="transactions-screen" class="screen">
+                 <div style="max-width: 800px; margin: 0 auto; padding-top: 1rem;">
+                     <h2 style="margin-bottom: 2rem;">Order History</h2>
+                     
+                     <div class="bento-tile" style="padding: 0; overflow: hidden;">
+                         <div class="table-responsive">
+                             <table class="transaction-table">
+                                 <thead>
+                                     <tr>
+                                         <th>Date</th>
+                                         <th>Amount</th>
+                                         <th>Status</th>
+                                         <th>Action</th>
+                                     </tr>
+                                 </thead>
+                                 <tbody id="transaction-list">
+                                     <!-- Orders injected here -->
+                                 </tbody>
+                             </table>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+
 
 
             <!-- Cart Screen (Mobile) -->
@@ -154,37 +182,7 @@
                 <div id="mobile-cart-footer"></div>
             </div>
 
-            <!-- Credits Screen -->
-            <div id="credits-screen" class="screen">
-                <div class="bento-hero" style="flex-direction: column; text-align: center;">
-                    <div class="bento-tile bento-main" style="width: 100%; max-width: 600px; margin: 0 auto;">
-                        <div class="bento-label">Current Balance</div>
-                        <h1 style="font-size: 3rem; margin-top: 1rem;">₹500.00</h1>
-                        <p style="margin-top: 1rem; opacity: 0.8; font-weight: 600;">Linked to Campus ID: ************4092</p>
-                        <div style="margin-top: 2rem;">
-                            <button class="btn-checkout" onclick="showToast('Recharge gateway coming soon!')" style="max-width: 200px; margin: 0 auto;">Add Funds</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <h2 style="margin-top: 3rem; margin-bottom: 1.5rem; text-align: center;">Recent Transactions</h2>
-                <div style="max-width: 600px; margin: 0 auto;">
-                    <div class="bento-tile" style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <h4 style="font-weight: 600;">Order #PL-2024</h4>
-                            <p style="font-size: 0.8rem; color: var(--text-muted);">Today, 10:42 AM</p>
-                        </div>
-                        <div style="color: var(--accent-coral); font-weight: 700;">-₹130</div>
-                    </div>
-                    <div class="bento-tile" style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <h4 style="font-weight: 600;">Wallet Top-up</h4>
-                            <p style="font-size: 0.8rem; color: var(--text-muted);">Yesterday, 4:15 PM</p>
-                        </div>
-                        <div style="color: var(--primary-teal); font-weight: 700;">+₹500</div>
-                    </div>
-                </div>
-            </div>
+
 
             <!-- Settings Screen -->
             <div id="settings-screen" class="screen">
@@ -249,6 +247,11 @@
                 <!-- Items injected here -->
             </div>
 
+            <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--primary-teal); font-weight: 700; text-align: center; background: var(--bg-secondary); padding: 0.5rem; border-radius: 8px;">
+                <i class="fa-solid fa-circle-info"></i> Min. Order: ₹500
+            </div>
+
+
             <div class="cart-footer">
                 <div class="cart-row">
                     <span>Subtotal</span>
@@ -268,16 +271,17 @@
 
         <!-- Bottom Navigation (Mobile) -->
         <nav class="bottom-nav">
-            <div class="nav-item active" onclick="showScreen('home')">
+            <div class="nav-item active" onclick="showScreen('home')" id="m-nav-home">
                 <i class="fa-solid fa-house"></i>
             </div>
-            <div class="nav-item" onclick="showScreen('cart')">
-                <i class="fa-solid fa-bag-shopping"></i>
+            <div class="nav-item" onclick="showScreen('transactions')" id="m-nav-transactions">
+                <i class="fa-solid fa-receipt"></i>
             </div>
-            <div class="nav-item" onclick="showScreen('status')">
+            <div class="nav-item" onclick="showScreen('status')" id="m-nav-status">
                 <i class="fa-solid fa-clock-rotate-left"></i>
             </div>
         </nav>
+
 
     </div>
 
@@ -294,7 +298,11 @@
                 <label>Mobile Number</label>
                 <input type="tel" id="checkout-mobile" class="form-control" placeholder="Enter mobile number">
             </div>
+            <div id="checkout-min-notice" style="margin: 1rem 0; padding: 0.8rem; background: #fff5f5; color: #e53e3e; border-radius: 8px; font-size: 0.85rem; font-weight: 600; text-align: center; display: none;">
+                <i class="fa-solid fa-triangle-exclamation"></i> Min. order value is ₹500
+            </div>
             <button class="btn-checkout" id="confirm-btn" onclick="confirmOrder(event)" style="margin-top: 1rem;">Confirm Order</button>
+
         </div>
     </div>
 
@@ -304,10 +312,11 @@
             <div class="logo" style="margin-bottom: 2rem;">PrintLab</div>
             <h2 style="margin-bottom: 1rem;">Welcome Back</h2>
             <p style="color: var(--text-muted); margin-bottom: 2.5rem;">Please log in to continue with campus printing.</p>
-            <button class="btn-checkout" onclick="loginWithGoogle()" style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
+            <button class="btn-checkout" onclick="loginWithGoogle(event)" style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
                 <i class="fa-brands fa-google"></i>
                 Continue with Google
             </button>
+
         </div>
     </div>
 
