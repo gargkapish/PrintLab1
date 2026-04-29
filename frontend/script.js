@@ -10,25 +10,23 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_
 
 
 const fallbackProducts = [
-    { id: 1, name: 'Standard Document', price: 2, icon: 'fa-file-lines', image: 'standard_document_printlab_1777451849704.png', desc: 'High-quality printing for your documents.', category: 'Print' },
-    { id: 2, name: 'Sunboard & Boxboard', price: 50, icon: 'fa-layer-group', image: 'sunboard_printlab_1777452528921.png', desc: 'Sturdy boards for models and presentations.', category: 'Sheets & Boards' },
-    { id: 3, name: 'Acrylic Sheets', price: 120, icon: 'fa-square-full', image: 'acrylic_sheets_printlab_1777452544512.png', desc: 'Clear and durable acrylic sheets.', category: 'Sheets & Boards' },
-
+    { id: 1, name: 'Standard Document', price: 2, icon: 'fa-file-lines', image: './standard_document_printlab_1777451849704.png', desc: 'High-quality printing for your documents.', category: 'Print' },
+    { id: 2, name: 'Sunboard & Boxboard', price: 50, icon: 'fa-layer-group', image: './sunboard_printlab_1777452528921.png', desc: 'Sturdy boards for models and presentations.', category: 'Sheets & Boards' },
+    { id: 3, name: 'Acrylic Sheets', price: 120, icon: 'fa-square-full', image: './acrylic_sheets_printlab_1777452544512.png', desc: 'Clear and durable acrylic sheets.', category: 'Sheets & Boards' },
     { id: 4, name: 'OHP Sheets', price: 10, icon: 'fa-file-image', image: 'https://images.unsplash.com/photo-1517148818476-75ff57a92744?q=80&w=800', desc: 'Clear & Coloured OHP sheets.', category: 'Sheets & Boards' },
     { id: 5, name: 'Cartridge Sheet', price: 5, icon: 'fa-file', image: 'https://images.unsplash.com/photo-1603484477859-abe6a73f9366?q=80&w=800', desc: 'Premium cartridge sheets.', category: 'Sheets & Boards' },
-
-
-    { id: 6, name: 'Cutter (blade)', price: 20, icon: 'fa-pen-nib', image: 'cutter_blade_printlab_1777451955366.png', desc: 'Sharp cutter for precise cuts.', category: 'Stationery' },
-    { id: 7, name: 'Precision Knife', price: 45, icon: 'fa-pen', image: 'precision_knife_printlab_1777451970860.png', desc: 'Craft precision knife.', category: 'Stationery' },
-    { id: 8, name: 'Cutting Mat', price: 150, icon: 'fa-table-cells', image: 'cutting_mat_printlab_1777451992827.png', desc: 'Self-healing cutting mat.', category: 'Stationery' },
-    { id: 9, name: 'Drawing Board', price: 250, icon: 'fa-clipboard', image: 'drawing_board_printlab_1777452009054.png', desc: 'Wooden drawing board.', category: 'Stationery' },
-    { id: 10, name: 'Nose Plier', price: 80, icon: 'fa-wrench', image: 'nose_plier_printlab_1777452024155.png', desc: 'Long nose plier.', category: 'Stationery' },
-    { id: 11, name: 'Pliers', price: 75, icon: 'fa-toolbox', image: 'pliers_printlab_1777452091069.png', desc: 'Standard pliers.', category: 'Stationery' },
-    { id: 12, name: 'Metal Wires', price: 30, icon: 'fa-bars-staggered', image: 'metal_wires_printlab_1777452106497.png', desc: 'Aluminum, iron wires for modeling.', category: 'Stationery' },
-    { id: 13, name: 'Mechanical Pencil', price: 40, icon: 'fa-pencil', image: 'mechanical_pencil_printlab_1777452126326.png', desc: '0.5mm / 0.7mm mechanical pencil.', category: 'Stationery' },
-    { id: 14, name: 'Staedtler Pencil Colors', price: 350, icon: 'fa-palette', image: 'staedtler_pencils_printlab_1777452144057.png', desc: 'Premium colored pencils.', category: 'Stationery' },
-    { id: 15, name: 'Alcohol Markers', price: 600, icon: 'fa-highlighter', image: 'alcohol_markers_printlab_1777452159013.png', desc: 'Set of alcohol-based markers.', category: 'Stationery' }
+    { id: 6, name: 'Cutter (blade)', price: 20, icon: 'fa-pen-nib', image: './cutter_blade_printlab_1777451955366.png', desc: 'Sharp cutter for precise cuts.', category: 'Stationery' },
+    { id: 7, name: 'Precision Knife', price: 45, icon: 'fa-pen', image: './precision_knife_printlab_1777451970860.png', desc: 'Craft precision knife.', category: 'Stationery' },
+    { id: 8, name: 'Cutting Mat', price: 150, icon: 'fa-table-cells', image: './cutting_mat_printlab_1777451992827.png', desc: 'Self-healing cutting mat.', category: 'Stationery' },
+    { id: 9, name: 'Drawing Board', price: 250, icon: 'fa-clipboard', image: './drawing_board_printlab_1777452009054.png', desc: 'Wooden drawing board.', category: 'Stationery' },
+    { id: 10, name: 'Nose Plier', price: 80, icon: 'fa-wrench', image: './nose_plier_printlab_1777452024155.png', desc: 'Long nose plier.', category: 'Stationery' },
+    { id: 11, name: 'Pliers', price: 75, icon: 'fa-toolbox', image: './pliers_printlab_1777452091069.png', desc: 'Standard pliers.', category: 'Stationery' },
+    { id: 12, name: 'Metal Wires', price: 30, icon: 'fa-bars-staggered', image: './metal_wires_printlab_1777452106497.png', desc: 'Aluminum, iron wires for modeling.', category: 'Stationery' },
+    { id: 13, name: 'Mechanical Pencil', price: 40, icon: 'fa-pencil', image: './mechanical_pencil_printlab_1777452126326.png', desc: '0.5mm / 0.7mm mechanical pencil.', category: 'Stationery' },
+    { id: 14, name: 'Staedtler Pencil Colors', price: 350, icon: 'fa-palette', image: './staedtler_pencils_printlab_1777452144057.png', desc: 'Premium colored pencils.', category: 'Stationery' },
+    { id: 15, name: 'Alcohol Markers', price: 600, icon: 'fa-highlighter', image: './alcohol_markers_printlab_1777452159013.png', desc: 'Set of alcohol-based markers.', category: 'Stationery' }
 ];
+
 
 
 // State Management
