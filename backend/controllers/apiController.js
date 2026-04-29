@@ -82,3 +82,23 @@ exports.getOrderStatus = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch order status' });
   }
 };
+
+exports.cancelOrder = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const { data, error } = await supabase
+      .from('orders')
+      .update({ status: 'Cancelled' })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    res.json(data);
+  } catch (err) {
+    console.error('Error cancelling order:', err);
+    res.status(500).json({ error: 'Failed to cancel order' });
+  }
+};
+

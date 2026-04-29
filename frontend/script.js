@@ -821,10 +821,54 @@ function createConfetti() {
 }
 
 // --- Animation Logic ---
+async function cancelCurrentOrder() {
+    if (!state.currentOrderId) return;
+    
+    if (!confirm('Are you sure you want to cancel this order?')) return;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/orders/${state.currentOrderId}/cancel`, {
+            method: 'PATCH'
+        });
+
+        if (response.ok) {
+            showToast('Order cancelled successfully');
+            const statusText = document.getElementById('status-text');
+            const progressBar = document.getElementById('status-progress-bar');
+            const cancelBtn = document.getElementById('cancel-order-container');
+
+            if (statusText) statusText.innerText = 'Order Cancelled';
+            if (progressBar) {
+                progressBar.style.width = '100%';
+                progressBar.style.background = 'var(--accent-coral)';
+            }
+            if (cancelBtn) cancelBtn.style.display = 'none';
+        } else {
+            showToast('Failed to cancel order');
+        }
+    } catch (err) {
+        console.error('Error cancelling order:', err);
+        showToast('Error cancelling order');
+    }
+}
+
 async function triggerStatusAnimation() {
+    const trackingUI = document.getElementById('order-tracking-ui');
+    const emptyUI = document.getElementById('order-empty-ui');
+
+    if (!state.currentOrderId) {
+        if (trackingUI) trackingUI.style.display = 'none';
+        if (emptyUI) emptyUI.style.display = 'block';
+        return;
+    }
+
+    if (trackingUI) trackingUI.style.display = 'block';
+    if (emptyUI) emptyUI.style.display = 'none';
+
     const progressBar = document.getElementById('status-progress-bar');
     const statusText = document.getElementById('status-text');
     const trackingHeading = document.querySelector('#status-screen h2');
+    const cancelBtn = document.getElementById('cancel-order-container');
 
     if (trackingHeading) {
         const displayId = state.currentOrderId
@@ -833,28 +877,47 @@ async function triggerStatusAnimation() {
         trackingHeading.innerText = `Tracking Order #${displayId}`;
     }
 
-    // Reset
-    if (progressBar) progressBar.style.width = '0%';
-    if (statusText) statusText.innerText = "Order Placed...";
 
-    if (state.currentOrderId && !state.currentOrderId.startsWith('PL-')) {
+    // Reset
+    if (progressBar) {
+        progressBar.style.width = '0%';
+        progressBar.style.background = 'var(--primary-teal)';
+    }
+    if (statusText) statusText.innerText = "Order Placed...";
+    if (cancelBtn) cancelBtn.style.display = 'block';
+
+    if (state.currentOrderId) {
         try {
             const response = await fetch(`${API_BASE_URL}/orders/${state.currentOrderId}`);
             if (response.ok) {
                 const data = await response.json();
                 console.log('Order status fetched:', data.status);
+                
+                if (data.status === 'Cancelled') {
+                    if (statusText) statusText.innerText = "Order Cancelled";
+                    if (progressBar) {
+                        progressBar.style.width = '100%';
+                        progressBar.style.background = 'var(--accent-coral)';
+                    }
+                    if (cancelBtn) cancelBtn.style.display = 'none';
+                } else if (data.status === 'Completed' || data.status === 'Ready') {
+                    if (statusText) statusText.innerText = "Order is ready for pickup!";
+                    if (progressBar) progressBar.style.width = '100%';
+                    if (cancelBtn) cancelBtn.style.display = 'none';
+                } else {
+                    // Default packing animation if not cancelled or completed
+                    setTimeout(() => {
+                        if (progressBar) progressBar.style.width = '33%';
+                        if (statusText) statusText.innerText = "Order is being packed...";
+                    }, 500);
+                }
             }
         } catch (err) {
             console.warn('Failed to fetch status', err);
         }
     }
-
-    // Trigger after small delay
-    setTimeout(() => {
-        if (progressBar) progressBar.style.width = '33%'; // Fill to 'Packed' step
-        if (statusText) statusText.innerText = "Order is being packed...";
-    }, 500);
 }
+
 
 function initMagneticButtons() {
     document.addEventListener('mousemove', (e) => {
