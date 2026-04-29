@@ -635,7 +635,7 @@ body {
     object-fit: cover;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 768px){
     .product-detail-flex {
         display: flex;
         gap: 3rem;
@@ -700,4 +700,4 @@ body {
     transform: scale(1.05);
     background: var(--dark-teal);
 }
-
+}
