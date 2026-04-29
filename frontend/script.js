@@ -1,7 +1,13 @@
-// Environment Config
 const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://localhost:5005'
     : 'https://printlab1.onrender.com';
+
+// Supabase Configuration
+const SUPABASE_URL = 'https://fwtmaucsjhlxzwtvrbkk.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ3dG1hdWNzamhseHp3dHZyYmtrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczNDg3MDcsImV4cCI6MjA5MjkyNDcwN30.yNWrEFi6cmNJgYLOoWnT6STpGs2pQ-XVm3KVWesB3GU';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+
 
 const fallbackProducts = [
     { id: 1, name: 'Standard Document', price: 2, icon: 'fa-file-lines', desc: 'High-quality printing for your documents.', category: 'Print' },
@@ -30,18 +36,148 @@ const state = {
     selectedProduct: null,
     tempQty: 1,
     isLoading: true,
-    currentOrderId: null
+    currentOrderId: null,
+    user: null,
+    profile: null
 };
+
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
     initDarkMode();
+    initAuth();
     simulateLoading();
     updateCartUI();
     initFunkyFeatures();
     startTypedTagline();
     initMagneticButtons();
 });
+
+// --- Auth Logic ---
+async function initAuth() {
+    console.log("Supabase Init: Checking session... Current URL:", window.location.href);
+    
+    // Give Supabase a moment to parse the URL hash if we just redirected back
+    if (window.location.hash) {
+        console.log("Hash detected in URL, waiting for Supabase to parse...");
+        await new Promise(r => setTimeout(r, 500));
+    }
+
+    const { data: { session }, error } = await supabaseClient.auth.getSession();
+    if (error) console.error("Session fetch error:", error);
+    
+    console.log("Initial session found:", session);
+    handleAuthState(session);
+
+    supabaseClient.auth.onAuthStateChange((_event, session) => {
+        console.log("Auth event:", _event, session);
+        handleAuthState(session);
+    });
+}
+
+
+
+function handleAuthState(session) {
+    if (session) {
+        console.log("User session active:", session.user.email);
+        state.user = session.user;
+        document.getElementById('auth-overlay').classList.remove('active');
+        checkProfile();
+    } else {
+        console.log("No active session.");
+        state.user = null;
+        state.profile = null;
+        document.getElementById('auth-overlay').classList.add('active');
+    }
+}
+
+
+async function loginWithGoogle() {
+    await supabaseClient.auth.signInWithOAuth({
+        provider: 'google',
+        options: { 
+            redirectTo: window.location.href // Redirect back to exactly where we are (including /frontend/)
+        }
+    });
+}
+
+
+
+async function checkProfile() {
+    if (!state.user) return;
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('users')
+            .select('*')
+            .eq('id', state.user.id)
+            .single();
+
+        
+        if (error || !data || !data.phone) {
+            document.getElementById('profile-modal').classList.add('active');
+        } else {
+            state.profile = data;
+            document.getElementById('profile-modal').classList.remove('active');
+            updateSettingsUI();
+        }
+    } catch (err) {
+        console.error('Profile check failed', err);
+    }
+}
+
+async function completeProfile() {
+    const username = document.getElementById('profile-username').value.trim();
+    const phone = document.getElementById('profile-phone').value.trim();
+
+    if (!username || !phone) {
+        showToast("Username and Phone are required.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/users`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                id: state.user.id,
+                email: state.user.email,
+                name: username,
+                phone: phone
+            })
+        });
+
+        if (!response.ok) throw new Error('Failed to save profile');
+        const profile = await response.json();
+        
+        state.profile = profile;
+        document.getElementById('profile-modal').classList.remove('active');
+        showToast("Profile completed! You can now place orders.");
+        updateSettingsUI();
+    } catch (err) {
+        console.error('Error completing profile:', err);
+        showToast("Failed to save profile. Try again.");
+    }
+}
+
+function updateSettingsUI() {
+    if (!state.profile) return;
+    
+    const settingsScreen = document.getElementById('settings-screen');
+    const nameEl = settingsScreen.querySelector('div[style*="font-weight: 600; margin-top: 0.3rem; font-size: 1.1rem;"]');
+    const emailEl = settingsScreen.querySelectorAll('div[style*="font-weight: 600; margin-top: 0.3rem; font-size: 1.1rem;"]')[1];
+    
+    if (nameEl) nameEl.innerText = state.profile.name;
+    if (emailEl) emailEl.innerText = state.profile.email;
+}
+
+async function logout() {
+    await supabaseClient.auth.signOut();
+    localStorage.removeItem('printlab_cart');
+    window.location.reload();
+}
+
+
 
 function initDarkMode() {
     const isDark = localStorage.getItem('printlab_dark') === 'true';
@@ -82,45 +218,32 @@ async function simulateLoading() {
         const response = await fetch(`${API_BASE_URL}/products`);
         if (!response.ok) throw new Error('API Error');
         state.products = await response.json();
-        setTimeout(() => {
-            state.isLoading = false;
-            renderProductGrid();
-        }, 500);
     } catch (err) {
         console.warn('Falling back to local data', err);
         state.products = fallbackProducts;
-        setTimeout(() => {
-            state.isLoading = false;
-            renderProductGrid();
-        }, 800);
+    } finally {
+        state.isLoading = false;
+        renderProductGrid();
     }
 }
+
 
 function saveToStorage() {
     localStorage.setItem('printlab_cart', JSON.stringify(state.cart));
 }
 
 function initFunkyFeatures() {
-    // Custom Cursor logic
-    const cursorDot = document.getElementById('cursor-dot');
-    const cursorOutline = document.getElementById('cursor-outline');
-
-    window.addEventListener('mousemove', (e) => {
-        const posX = e.clientX;
-        const posY = e.clientY;
-
-        cursorDot.style.left = `${posX}px`;
-        cursorDot.style.top = `${posY}px`;
-
-        // Smooth outline follow
-        cursorOutline.animate({
-            left: `${posX}px`,
-            top: `${posY}px`
-        }, { duration: 500, fill: "forwards" });
-    });
-
-    // Remove 3D Tilt Effect logic (it's handled by CSS hover now for simplicity/performance in light mode)
+    // Other features can go here
 }
+
+function toggleSetting(id) {
+    const el = document.getElementById(`${id}-toggle`);
+    if (el) {
+        el.classList.toggle('active');
+        showToast('Settings updated');
+    }
+}
+
 
 // --- SPA Navigation ---
 function showScreen(screenId) {
@@ -611,8 +734,20 @@ function openCheckoutModal() {
         showToast("Your cart is empty!");
         return;
     }
+    
+    if (!state.profile || !state.profile.phone) {
+        showToast("Please complete your profile first.");
+        document.getElementById('profile-modal').classList.add('active');
+        return;
+    }
+
+    // Auto-fill form if possible
+    document.getElementById('checkout-name').value = state.profile.name || '';
+    document.getElementById('checkout-mobile').value = state.profile.phone || '';
+    
     document.getElementById('checkout-modal').classList.add('active');
 }
+
 
 function closeCheckoutModal() {
     document.getElementById('checkout-modal').classList.remove('active');
@@ -642,9 +777,11 @@ async function confirmOrder(e) {
                 items: state.cart, 
                 total: total,
                 customerName: nameInput,
-                customerMobile: mobileInput
+                customerMobile: mobileInput,
+                userId: state.user.id
             })
         });
+
 
         if (!response.ok) throw new Error('Failed to place order');
         const orderData = await response.json();

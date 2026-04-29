@@ -523,3 +523,77 @@ body {
     box-shadow: 0 0 0 3px rgba(29, 158, 117, 0.2);
 }
 
+/* Skeleton Loading */
+.skeleton-card {
+    background: var(--white);
+    border-radius: var(--global-radius);
+    padding: 24px;
+    box-shadow: var(--shadow-premium);
+}
+
+.skeleton {
+    background: linear-gradient(90deg, var(--bg-color) 25%, #ecebeb 50%, var(--bg-color) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 10px;
+}
+
+@keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.skeleton-img {
+    width: 100%;
+    aspect-ratio: 1.2;
+    margin-bottom: 1.5rem;
+}
+
+.skeleton-text {
+    height: 1.2rem;
+    width: 80%;
+    margin-bottom: 0.5rem;
+}
+
+.skeleton-price {
+    height: 1rem;
+    width: 40%;
+}
+
+/* Auth Improvements */
+.fa-google {
+    color: #4285F4;
+    background: white;
+    border-radius: 50%;
+    padding: 2px;
+}
+/* Settings Toggle */
+.toggle-switch {
+    width: 48px;
+    height: 26px;
+    background: var(--text-muted);
+    border-radius: 13px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.toggle-switch.active {
+    background: var(--primary-teal);
+}
+
+.toggle-dot {
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.toggle-switch.active .toggle-dot {
+    transform: translateX(22px);
+}
+

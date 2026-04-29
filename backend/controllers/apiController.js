@@ -1,5 +1,28 @@
 const supabase = require('../services/supabase');
 
+exports.saveUser = async (req, res) => {
+  try {
+    const { id, email, name, phone } = req.body;
+    
+    if (!id || !email) {
+      return res.status(400).json({ error: 'Missing required user fields' });
+    }
+
+    const { data, error } = await supabase
+      .from('users')
+      .upsert({ id, email, name, phone })
+      .select()
+      .single();
+
+    if (error) throw error;
+    res.json(data);
+  } catch (err) {
+    console.error('Error saving user:', err);
+    res.status(500).json({ error: 'Failed to save user profile' });
+  }
+};
+
+
 exports.getProducts = async (req, res) => {
   try {
     const { data, error } = await supabase.from('products').select('*');
@@ -13,7 +36,7 @@ exports.getProducts = async (req, res) => {
 
 exports.createOrder = async (req, res) => {
   try {
-    const { items, total, customerName, customerMobile } = req.body;
+    const { items, total, customerName, customerMobile, userId } = req.body;
     
     if (!items || items.length === 0) {
       return res.status(400).json({ error: 'Order must contain items' });
@@ -25,10 +48,12 @@ exports.createOrder = async (req, res) => {
         items, 
         total,
         customer_name: customerName,
-        customer_mobile: customerMobile
+        customer_mobile: customerMobile,
+        user_id: userId
       }])
       .select()
       .single();
+
 
     if (error) throw error;
     res.status(201).json(data);

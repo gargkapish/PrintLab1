@@ -7,10 +7,15 @@
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
+
 <body>
 
     <div class="app-container">
+
+
         
         <!-- Mobile Header -->
         <header class="mobile-header">
@@ -194,15 +199,17 @@
                                 <p style="font-size: 0.85rem; color: var(--text-muted);">Receive updates about your orders</p>
                             </div>
                             <div>
-                                <div style="width: 44px; height: 24px; background: var(--primary-teal); border-radius: 12px; position: relative; cursor: pointer;" onclick="this.style.background = this.style.background === 'var(--text-muted)' ? 'var(--primary-teal)' : 'var(--text-muted)'">
-                                    <div style="width: 20px; height: 20px; background: white; border-radius: 50%; position: absolute; top: 2px; right: 2px; pointer-events: none;"></div>
+                                <div class="toggle-switch" id="notif-toggle" onclick="toggleSetting('notif')">
+                                    <div class="toggle-dot"></div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
 
                     <div style="text-align: center; margin-top: 3rem;">
-                        <p style="color: var(--accent-coral); font-weight: 600; cursor: pointer; display: inline-block; padding: 0.5rem 1rem;" onclick="showToast('Logged out successfully!')">Log Out</p>
+                        <p style="color: var(--accent-coral); font-weight: 600; cursor: pointer; display: inline-block; padding: 0.5rem 1rem;" onclick="logout()">Log Out</p>
+
                     </div>
                 </div>
             </div>
@@ -276,6 +283,37 @@
         </div>
     </div>
 
+    <!-- Auth Overlay -->
+    <div id="auth-overlay" class="modal-overlay active">
+        <div class="modal-content" style="text-align: center; padding: 4rem 2rem;">
+            <div class="logo" style="margin-bottom: 2rem;">PrintLab</div>
+            <h2 style="margin-bottom: 1rem;">Welcome Back</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2.5rem;">Please log in to continue with campus printing.</p>
+            <button class="btn-checkout" onclick="loginWithGoogle()" style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
+                <i class="fa-brands fa-google"></i>
+                Continue with Google
+            </button>
+        </div>
+    </div>
+
+    <!-- Profile Completion Modal -->
+    <div id="profile-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 class="modal-title">Complete your profile</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">We need a few more details before you can place orders.</p>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="profile-username" class="form-control" placeholder="Choose a username">
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" id="profile-phone" class="form-control" placeholder="Enter phone number">
+            </div>
+            <button class="btn-checkout" onclick="completeProfile()" style="margin-top: 1rem;">Finish Setup</button>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
+
 </html>
