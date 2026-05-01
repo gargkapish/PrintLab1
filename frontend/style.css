@@ -36,6 +36,10 @@ body.dark-mode {
     --input-border: rgba(255, 255, 255, 0.1);
 }
 
+body.dark-mode .category-hex:nth-child(even) {
+    background: var(--teal-badge-bg);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -262,6 +266,68 @@ body {
 
 .category-hex.active i, .category-hex.active span {
     color: var(--white);
+}
+
+/* Scanning Feature UI */
+.scan-container {
+    margin-top: 1.5rem;
+    padding: 1.25rem;
+    background: var(--teal-badge-bg);
+    border-radius: 15px;
+    border: 1px dashed var(--primary-teal);
+    text-align: center;
+}
+
+.scan-btn {
+    background: var(--primary-teal);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    width: 100%;
+    transition: var(--spring-transition);
+}
+
+.scan-btn:hover {
+    background: var(--dark-teal);
+}
+
+.scan-loader {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.scanner-bar {
+    width: 100%;
+    height: 4px;
+    background: var(--primary-teal);
+    position: relative;
+    overflow: hidden;
+    border-radius: 2px;
+}
+
+.scanner-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 50%;
+    height: 100%;
+    background: white;
+    animation: scan-move 1.5s infinite linear;
+}
+
+@keyframes scan-move {
+    0% { left: -50%; }
+    100% { left: 100%; }
 }
 
 /* Product Cards */
@@ -544,6 +610,47 @@ body {
     outline: none;
     border-color: var(--primary-teal);
     box-shadow: 0 0 0 3px rgba(29, 158, 117, 0.2);
+}
+
+/* Payment Gateway Styles */
+.payment-methods {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.payment-option {
+    padding: 1rem;
+    border: 2px solid var(--bg-color);
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--spring-transition);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.payment-option:hover {
+    border-color: var(--primary-teal);
+    background: var(--teal-badge-bg);
+}
+
+.payment-option.active {
+    border-color: var(--primary-teal);
+    background: var(--teal-badge-bg);
+}
+
+.payment-option i {
+    font-size: 1.5rem;
+    color: var(--primary-teal);
+}
+
+.payment-option span {
+    font-size: 0.8rem;
+    font-weight: 700;
 }
 
 /* Skeleton Loading */
