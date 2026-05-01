@@ -339,7 +339,7 @@ function renderProductGrid() {
         <div class="product-card" onclick="openProductDetail('${product.id}')">
             <div class="product-img">
                 ${product.image 
-                    ? `<img src="${product.image}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">`
+                    ? `<img src="${product.image}" alt="${product.name}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">`
                     : `<i class="fa-solid ${product.icon} text-teal"></i>`
                 }
             </div>
@@ -356,7 +356,7 @@ function renderProductGrid() {
     cards.forEach((card, index) => {
         setTimeout(() => {
             card.classList.add('reveal');
-        }, index * 80);
+        }, index * 30); // Faster stagger
     });
 }
 

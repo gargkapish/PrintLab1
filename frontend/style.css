@@ -662,15 +662,15 @@ body {
 }
 
 .skeleton {
-    background: linear-gradient(90deg, var(--bg-color) 25%, #ecebeb 50%, var(--bg-color) 75%);
+    background: linear-gradient(90deg, var(--bg-color) 25%, var(--teal-badge-bg) 50%, var(--bg-color) 75%);
     background-size: 200% 100%;
-    animation: skeleton-loading 1.5s infinite;
+    animation: skeleton-loading 1.2s infinite ease-in-out;
     border-radius: 10px;
 }
 
 @keyframes skeleton-loading {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+    0% { background-position: 150% 0; }
+    100% { background-position: -150% 0; }
 }
 
 .skeleton-img {
