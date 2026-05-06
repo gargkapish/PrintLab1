@@ -6,7 +6,10 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const newProducts = [
-    { name: 'Standard Document', price: 2, icon: 'fa-file-lines', image: './assets/standard_document_printlab_1777451849704.png', description: 'High-quality printing for your documents.', category: 'Print' },
+    { name: 'Photo Paper', price: 30, icon: 'fa-image', image: null, description: 'High quality photo printing (A5, A4, A3, A2).', category: 'Print' },
+    { name: 'Standard paper (high gsm)', price: 30, icon: 'fa-file-lines', image: null, description: 'Thick standard paper (A4, A3, A2).', category: 'Print' },
+    { name: 'Standard Paper (low gsm)', price: 4, icon: 'fa-file', image: null, description: 'Standard low GSM paper (A4 only).', category: 'Print' },
+    { name: 'Jury Panels', price: 200, icon: 'fa-clipboard-list', image: null, description: 'Large jury panels for presentations.', category: 'Print' },
     { name: 'Sunboard & Boxboard', price: 50, icon: 'fa-layer-group', image: './assets/sunboard_printlab_1777452528921.png', description: 'Sturdy boards for models and presentations.', category: 'Sheets & Boards' },
     { name: 'Acrylic Sheets', price: 120, icon: 'fa-square-full', image: './assets/acrylic_sheets_printlab_1777452544512.png', description: 'Clear and durable acrylic sheets.', category: 'Sheets & Boards' },
     { name: 'OHP Sheets', price: 10, icon: 'fa-file-image', image: './assets/ohp_sheets.png', description: 'Clear & Coloured OHP sheets.', category: 'Sheets & Boards' },

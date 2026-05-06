@@ -1,36 +1,36 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap');
 
 :root {
-    --primary-teal: #1D9E75;
-    --dark-teal: #106E56;
-    --accent-coral: #D85A30;
-    --accent-amber: #BA7517;
-    --bg-color: #F7F8F5;
+    --primary-teal: #17C3B2; /* Vibrant Teal */
+    --dark-teal: #0F8C81; /* Deeper Teal */
+    --accent-coral: #FF9F1C; /* Vibrant Peach/Orange */
+    --accent-amber: #9B5DE5; /* Vibrant Purple */
+    --bg-color: #F8F9FA; /* Clean minimal white-grey */
     --white: #FFFFFF;
-    --glass-sidebar: rgba(255, 255, 255, 0.4);
-    --teal-badge-bg: #E1F5EE;
-    --coral-badge-bg: #FAECE7;
-    --text-dark: #1A1A1A;
-    --text-muted: #666666;
-    --border-glass: rgba(255, 255, 255, 0.2);
+    --glass-sidebar: rgba(255, 255, 255, 0.75);
+    --teal-badge-bg: #E0F7F5; /* Crisp Light Teal badge */
+    --coral-badge-bg: #FFF0E6; /* Crisp Light Peach badge */
+    --text-dark: #13201F; /* Deep slate teal */
+    --text-muted: #687D7B; /* Muted slate teal */
+    --border-glass: rgba(0, 0, 0, 0.05);
     --global-radius: 20px;
-    --shadow-float: 0 20px 40px rgba(0, 0, 0, 0.05);
-    --shadow-premium: 0 10px 30px rgba(0, 0, 0, 0.03);
+    --shadow-float: 0 20px 40px rgba(0, 0, 0, 0.04);
+    --shadow-premium: 0 10px 30px rgba(0, 0, 0, 0.02);
     --spring-transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     --sidebar-width: 280px;
     --cart-width: 340px;
-    --input-border: rgba(0,0,0,0.1);
+    --input-border: rgba(0,0,0,0.08);
 }
 
 body.dark-mode {
-    --bg-color: #121212;
-    --white: #1E1E1E;
-    --text-dark: #FFFFFF;
-    --text-muted: #A0A0A0;
-    --glass-sidebar: rgba(30, 30, 30, 0.6);
-    --border-glass: rgba(255, 255, 255, 0.1);
-    --teal-badge-bg: #106E56;
-    --coral-badge-bg: #8c3f24;
+    --bg-color: #131A19;
+    --white: #1B2625;
+    --text-dark: #F0F5F4;
+    --text-muted: #93A3A1;
+    --glass-sidebar: rgba(27, 38, 37, 0.8);
+    --border-glass: rgba(255, 255, 255, 0.05);
+    --teal-badge-bg: #1B3B38; /* Dark Teal badge */
+    --coral-badge-bg: #3B281B; /* Dark Peach badge */
     --shadow-float: 0 20px 40px rgba(0, 0, 0, 0.3);
     --shadow-premium: 0 10px 30px rgba(0, 0, 0, 0.2);
     --input-border: rgba(255, 255, 255, 0.1);
@@ -53,17 +53,43 @@ body {
     line-height: 1.5;
     overflow-x: hidden;
     min-height: 100vh;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('./assets/splash-bg.png');
+    background-repeat: repeat;
+    background-size: 600px; /* Zoomed background further */
+    opacity: 0.3; /* More transparent splashes */
+    mix-blend-mode: multiply; /* Removes white background, keeping it clean and visible */
+    pointer-events: none;
+    z-index: 0;
+}
+
+body.dark-mode::before {
+    opacity: 0.35; /* Highly visible in dark mode */
+    filter: invert(1) hue-rotate(180deg) brightness(1.5) contrast(1.2);
+    mix-blend-mode: screen; /* Blends perfectly over dark backgrounds */
 }
 
 /* Layout - 3 Column Desktop */
 .app-container {
     display: grid;
     min-height: 100vh;
+    position: relative;
+    z-index: 1;
 }
 
 @media (min-width: 1024px) {
     .app-container {
-        grid-template-columns: var(--sidebar-width) 1fr var(--cart-width);
+        padding-left: 120px; /* Space for the floating pill sidebar */
+        grid-template-columns: 1fr var(--cart-width); /* Sets proper grid columns for content and cart */
     }
 
     .bottom-nav, .mobile-header {
@@ -100,51 +126,150 @@ body {
     }
 }
 
-/* Sidebar Navigation */
+/* Sidebar Navigation (Collapsible Floating Pills) */
 .sidebar {
+    background: transparent;
+    border: none;
+    padding: 0;
+    height: calc(100vh - 40px);
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 80px; /* Collapsed width */
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar:hover {
+    width: 260px; /* Hover expanded width */
+}
+
+/* Individual Pill styling */
+.sidebar > .nav-links {
     background: var(--glass-sidebar);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
-    border-right: 1px solid var(--border-glass);
-    padding: 3rem 1.5rem;
-    height: 100vh;
-    position: sticky;
-    top: 0;
+    border: 1px solid var(--border-glass);
+    border-radius: 40px; /* Pill shape */
+    padding: 1rem 0.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
     display: flex;
     flex-direction: column;
+    transition: padding 0.3s ease;
 }
 
-.logo {
-    font-size: 1.75rem;
-    font-weight: 900;
-    color: var(--primary-teal);
-    margin-bottom: 3.5rem;
-    letter-spacing: -0.5px;
+.sidebar:hover > .nav-links {
+    padding: 1rem 1rem;
+}
+
+.logo-pill {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
+    margin: 0 0 2rem 10px; /* Aligned left, perfectly matching nav-links pill width */
+    transition: var(--spring-transition);
+}
+
+.dark-mode-pill {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--glass-sidebar);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--border-glass);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin: auto 0 0 10px; /* Aligned left, perfectly matching nav-links pill width */
+    transition: var(--spring-transition);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    color: var(--text-muted);
+}
+
+.dark-mode-pill:hover {
+    background: var(--white);
+    color: var(--primary-teal);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-premium);
+}
+
+.logo-pill:hover {
+    transform: translateY(-2px);
 }
 
 .nav-links {
     list-style: none;
+    width: 100%;
 }
 
 .nav-item {
-    padding: 1rem 1.5rem;
-    border-radius: var(--global-radius);
-    margin-bottom: 0.5rem;
+    width: 44px;
+    height: 44px;
+    border-radius: 22px;
+    margin: 0 auto 0.5rem auto;
     cursor: pointer;
     font-weight: 600;
     color: var(--text-muted);
     transition: var(--spring-transition);
     display: flex;
     align-items: center;
-    gap: 1rem;
+    justify-content: center;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.sidebar:hover .nav-item {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 0 1.25rem;
+    margin: 0 0 0.25rem 0;
+}
+
+.nav-item i {
+    font-size: 1.25rem;
+    min-width: 24px;
+    text-align: center;
+    margin: 0;
+}
+
+.sidebar:hover .nav-item i {
+    margin-right: 1.25rem;
+}
+
+.nav-item span {
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+    display: none;
+}
+
+.sidebar:hover .nav-item span {
+    display: block;
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+    transition-delay: 0.05s;
 }
 
 .nav-item:hover, .nav-item.active {
     background: var(--white);
     color: var(--primary-teal);
     box-shadow: var(--shadow-premium);
-    transform: translateX(5px);
+    transform: translateY(-2px); /* Lift up when collapsed */
+}
+
+.sidebar:hover .nav-item:hover, .sidebar:hover .nav-item.active {
+    transform: translateX(5px); /* Shift right when expanded */
 }
 
 /* Main Content */
@@ -427,7 +552,7 @@ body {
 .progress-label {
     display: flex;
     justify-content: space-between;
-    font-size: 0.8rem;
+    font-size: 0.95rem; /* Increased size slightly */
     font-weight: 700;
     margin-bottom: 0.5rem;
 }
@@ -482,6 +607,12 @@ body {
     font-size: 1rem;
     cursor: pointer;
     transition: var(--spring-transition);
+}
+
+.btn-checkout {
+    color: #000000; /* Black text */
+    font-size: 1.1rem; /* Slightly larger text */
+    padding: 1.35rem 1.25rem; /* Slightly larger button */
 }
 
 .btn-checkout:hover, .btn-add:hover {
