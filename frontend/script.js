@@ -109,7 +109,7 @@ async function loginWithGoogle() {
         const { error } = await supabaseClient.auth.signInWithOAuth({
             provider: 'google',
             options: { 
-                redirectTo: window.location.href 
+                redirectTo: window.location.origin 
             }
         });
         if (error) throw error;
@@ -245,7 +245,20 @@ async function simulateLoading() {
     try {
         const response = await fetch(`${API_BASE_URL}/products`);
         if (!response.ok) throw new Error('API Error');
-        state.products = await response.json();
+        const dbProducts = await response.json();
+        
+        // Merge missing images/descriptions from local fallbackProducts array for robustness!
+        state.products = dbProducts.map(dbP => {
+            const fallbackP = fallbackProducts.find(fP => fP.name.toLowerCase() === dbP.name.toLowerCase());
+            if (fallbackP) {
+                return {
+                    ...dbP,
+                    image: dbP.image || fallbackP.image,
+                    description: dbP.description || fallbackP.description
+                };
+            }
+            return dbP;
+        });
     } catch (err) {
         console.warn('Falling back to local data', err);
         state.products = fallbackProducts;
