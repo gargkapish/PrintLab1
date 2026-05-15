@@ -939,3 +939,70 @@ body.dark-mode::before {
     background: var(--dark-teal);
 }
 }
+
+/* Premium Eye-Catchy Quantity Selector */
+.quantity-selector {
+    display: inline-flex;
+    align-items: center;
+    background: var(--bg-secondary);
+    border-radius: 50px;
+    padding: 6px;
+    gap: 15px;
+    border: 2px solid var(--input-border);
+    box-shadow: var(--shadow-premium);
+    transition: var(--spring-transition);
+}
+
+.quantity-selector:hover {
+    border-color: var(--primary-teal);
+    transform: scale(1.02);
+}
+
+.qty-btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: none;
+    background: var(--white);
+    color: var(--text-dark);
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--spring-transition);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.qty-btn:hover {
+    background: var(--primary-teal);
+    color: var(--white);
+    transform: scale(1.1);
+}
+
+.qty-btn:active {
+    transform: scale(0.9);
+}
+
+.qty-value {
+    font-size: 1.4rem;
+    font-weight: 800;
+    min-width: 30px;
+    text-align: center;
+    color: var(--text-dark);
+}
+
+/* Dark mode adjustment for quantity selector */
+body.dark-mode .quantity-selector {
+    background: #232D2C;
+    border-color: rgba(255,255,255,0.05);
+}
+
+body.dark-mode .qty-btn {
+    background: #1B2625;
+    color: var(--white);
+}
+
+body.dark-mode .qty-btn:hover {
+    background: var(--primary-teal);
+}

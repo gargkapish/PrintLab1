@@ -489,16 +489,29 @@ function openProductDetail(productId) {
                 </div>` : ''}
             </div>
             <div class="scan-container">
-                <button class="scan-btn" id="scan-btn" onclick="triggerScan()">
-                    <i class="fa-solid fa-expand"></i>
-                    Scan Document to Print
-                </button>
+                <div style="display: flex; gap: 1rem;">
+                    <button class="scan-btn" id="scan-btn" onclick="triggerScan()">
+                        <i class="fa-solid fa-expand"></i>
+                        Scan Document
+                    </button>
+                    <button class="scan-btn" id="upload-btn" onclick="triggerUpload()" style="background: var(--accent-amber);">
+                        <i class="fa-solid fa-upload"></i>
+                        Upload File
+                    </button>
+                </div>
                 <div class="scan-loader" id="scan-loader">
                     <div class="scanner-bar"></div>
                     <p style="font-size: 0.85rem; font-weight: 600; color: var(--primary-teal);">Scanning Document...</p>
                 </div>
+                <div class="scan-loader" id="upload-loader">
+                    <div class="scanner-bar" style="background: var(--accent-amber);"></div>
+                    <p style="font-size: 0.85rem; font-weight: 600; color: var(--accent-amber);">Uploading File...</p>
+                </div>
                 <p id="scan-success" style="display: none; font-size: 0.85rem; font-weight: 700; color: var(--primary-teal); margin-top: 0.5rem;">
                     <i class="fa-solid fa-circle-check"></i> Document Scanned Successfully!
+                </p>
+                <p id="upload-success" style="display: none; font-size: 0.85rem; font-weight: 700; color: var(--accent-amber); margin-top: 0.5rem;">
+                    <i class="fa-solid fa-circle-check"></i> File Uploaded Successfully!
                 </p>
             </div>
         `;
@@ -656,17 +669,36 @@ function updateDynamicPrice() {
 
 function triggerScan() {
     const btn = document.getElementById('scan-btn');
+    const uploadBtn = document.getElementById('upload-btn');
     const loader = document.getElementById('scan-loader');
     const success = document.getElementById('scan-success');
 
-    btn.style.display = 'none';
-    loader.style.display = 'flex';
+    if(btn) btn.style.display = 'none';
+    if(uploadBtn) uploadBtn.style.display = 'none';
+    if(loader) loader.style.display = 'flex';
 
     setTimeout(() => {
-        loader.style.display = 'none';
-        success.style.display = 'block';
+        if(loader) loader.style.display = 'none';
+        if(success) success.style.display = 'block';
         showToast("Document scanned successfully!");
     }, 2500);
+}
+
+function triggerUpload() {
+    const btn = document.getElementById('scan-btn');
+    const uploadBtn = document.getElementById('upload-btn');
+    const loader = document.getElementById('upload-loader');
+    const success = document.getElementById('upload-success');
+
+    if(btn) btn.style.display = 'none';
+    if(uploadBtn) uploadBtn.style.display = 'none';
+    if(loader) loader.style.display = 'flex';
+
+    setTimeout(() => {
+        if(loader) loader.style.display = 'none';
+        if(success) success.style.display = 'block';
+        showToast("File uploaded successfully!");
+    }, 2000);
 }
 
 function updateTempQty(change) {
@@ -837,14 +869,22 @@ function renderCartItems(containerId) {
     }
 
     container.innerHTML = state.cart.map(item => `
-        <div class="cart-item" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; padding: 0.5rem;">
+        <div class="cart-item" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; padding: 0.5rem; background: var(--white); border-radius: 15px; box-shadow: var(--shadow-premium);">
             <div class="cart-item-img" style="display:flex; align-items:center; justify-content:center; background: #E1F5EE; border-radius: 50%; min-width: 50px; height: 50px;">
                 <i class="fa-solid ${item.icon}" style="font-size: 1.2rem; color: var(--primary-teal);"></i>
             </div>
             <div class="cart-item-info" style="flex-grow: 1;">
-                <h4 style="font-weight: 600; font-size: 1rem; margin-bottom: 0.25rem;">${item.name}</h4>
-                ${item.itemDesc ? `<p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.25rem;">${item.itemDesc}</p>` : ''}
-                <p style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;">₹${item.price} x ${item.qty}</p>
+                <h4 style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.25rem;">${item.name}</h4>
+                ${item.itemDesc ? `<p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">${item.itemDesc}</p>` : ''}
+                
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <span style="font-weight: 800; color: var(--primary-teal);">₹${item.price}</span>
+                    <div class="quantity-selector" style="padding: 4px; gap: 10px; transform: scale(0.85); origin: left center;">
+                        <button class="qty-btn" style="width: 30px; height: 30px; font-size: 0.9rem;" onclick="updateCartQty('${item.cartId || item.id}', -1)"><i class="fa-solid fa-minus"></i></button>
+                        <span class="qty-value" style="font-size: 1rem; min-width: 20px;">${item.qty}</span>
+                        <button class="qty-btn" style="width: 30px; height: 30px; font-size: 0.9rem;" onclick="updateCartQty('${item.cartId || item.id}', 1)"><i class="fa-solid fa-plus"></i></button>
+                    </div>
+                </div>
             </div>
             <div style="cursor: pointer; color: var(--accent-coral); padding: 0.5rem;" 
                  onclick="removeFromCart('${item.cartId || item.id}')">
@@ -858,6 +898,15 @@ function removeFromCart(cartId) {
     state.cart = state.cart.filter(item => (item.cartId || String(item.id)) !== String(cartId));
     saveToStorage();
     updateCartUI();
+}
+
+function updateCartQty(cartId, change) {
+    const item = state.cart.find(item => (item.cartId || String(item.id)) === String(cartId));
+    if (item) {
+        item.qty = Math.max(1, item.qty + change);
+        saveToStorage();
+        updateCartUI();
+    }
 }
 
 function calculateTotals() {
@@ -882,7 +931,7 @@ function calculateTotals() {
         mobileFooter.innerHTML = `
             <div class="cart-footer" style="margin-top: 2rem;">
                 <div class="cart-row"><span>Subtotal</span><span>₹${subtotal}</span></div>
-                <div class="cart-row"><span>Svc Fee</span><span>₹${fee}</span></div>
+                <div class="cart-row"><span>Convenience Fee</span><span>₹${fee}</span></div>
                 <div class="cart-row total-row"><span>Total</span><span>₹${total}</span></div>
                 <button class="btn-checkout" onclick="openCheckoutModal()">Place Order</button>
             </div>
@@ -932,7 +981,7 @@ async function confirmOrder(e) {
 
 
     // Validation: Min Order ₹100
-    const subtotal = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const subtotal = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
     if (subtotal < 100) {
         document.getElementById('checkout-min-notice').style.display = 'block';
         showToast("Minimum order value is ₹100");
