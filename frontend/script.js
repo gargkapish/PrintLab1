@@ -266,6 +266,22 @@ async function completeProfile() {
     }
 }
 
+function skipProfileCompletion() {
+    state.profile = {
+        name: 'Guest Student',
+        phone: '9999999999',
+        email: state.user ? state.user.email : 'guest@campus.edu'
+    };
+    document.getElementById('profile-modal').classList.remove('active');
+    showToast("Profile skipped! Feel free to checkout instantly.");
+    updateSettingsUI();
+    
+    // Automatically launch checkout modal directly if they have cart items!
+    if (state.cart.length > 0) {
+        openCheckoutModal();
+    }
+}
+
 function updateSettingsUI() {
     if (!state.profile) return;
 
