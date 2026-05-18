@@ -450,7 +450,7 @@ body.dark-mode::before {
     min-width: 120px;
     height: 130px;
     background: var(--teal-badge-bg);
-    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    clip-path: url(#rounded-hex);
     display: flex;
     flex-direction: column;
     align-items: center;
