@@ -51,7 +51,10 @@ const state = {
     isLoading: true,
     currentOrderId: null,
     user: null,
-    profile: null
+    profile: null,
+    walletBalance: localStorage.getItem('printlab_wallet') !== null ? parseFloat(localStorage.getItem('printlab_wallet')) : 150.00,
+    checkoutPaymentMode: 'gateway',
+    checkoutSnack: 'none'
 };
 
 
@@ -113,6 +116,22 @@ function handleAuthState(session) {
         state.profile = null;
         document.getElementById('auth-overlay').classList.add('active');
     }
+}
+
+
+function bypassAuthAsGuest() {
+    console.log("Guest checkout triggered. Setting up temporary campus session...");
+    const mockSession = {
+        user: {
+            id: 'mock-user-123',
+            email: 'student@campus.edu',
+            user_metadata: {
+                full_name: 'Alex Student (Guest)'
+            }
+        }
+    };
+    handleAuthState(mockSession);
+    showToast("Welcome guest student! Complete your profile later.");
 }
 
 
@@ -349,6 +368,18 @@ function toggleSetting(id) {
 function showScreen(screenId) {
     // Update State
     state.currentScreen = screenId;
+
+    // Suspend background polling loops when switching away from the live order tracker
+    if (screenId !== 'status') {
+        if (state.statusCountdownInterval) {
+            clearInterval(state.statusCountdownInterval);
+            state.statusCountdownInterval = null;
+        }
+        if (state.breatheInterval) {
+            clearInterval(state.breatheInterval);
+            state.breatheInterval = null;
+        }
+    }
 
     // Toggle Screen Visibility
     const screens = document.querySelectorAll('.screen');
@@ -1088,6 +1119,61 @@ function calculateTotals() {
     }
 }
 
+// --- Student Wallet & Late-Night Snack Logic (SCAMPER Model) ---
+function saveWalletBalance() {
+    localStorage.setItem('printlab_wallet', state.walletBalance.toString());
+    
+    const checkoutBalEl = document.getElementById('checkout-wallet-bal');
+    if (checkoutBalEl) checkoutBalEl.innerText = `Bal: ₹${state.walletBalance.toFixed(2)}`;
+    
+    const settingsBalEl = document.getElementById('settings-wallet-bal');
+    if (settingsBalEl) settingsBalEl.innerText = `₹${state.walletBalance.toFixed(2)}`;
+}
+
+function topUpWallet(amount) {
+    state.walletBalance += amount;
+    saveWalletBalance();
+    showToast(`Successfully added ₹${amount} to your Student Wallet!`);
+}
+
+function selectCheckoutPayMode(mode) {
+    state.checkoutPaymentMode = mode;
+    document.querySelectorAll('.pay-method-card').forEach(card => {
+        card.classList.remove('active');
+        card.style.borderColor = 'transparent';
+    });
+    
+    const cardEl = document.getElementById(`pay-mode-${mode}`);
+    if (cardEl) {
+        cardEl.classList.add('active');
+        cardEl.style.borderColor = 'var(--primary-teal)';
+    }
+    
+    updateCheckoutTotal();
+}
+
+function updateCheckoutTotal() {
+    const selectedSnack = document.querySelector('input[name="late-night-snack"]:checked');
+    state.checkoutSnack = selectedSnack ? selectedSnack.value : 'none';
+    
+    const subtotal = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    
+    // Frictionless HMI Discount: ₹0 convenience fee for Wallet payments (UPI/Card remains ₹10)
+    const fee = state.checkoutPaymentMode === 'gateway' ? (subtotal > 0 ? 10 : 0) : 0;
+    
+    let snackPrice = 0;
+    if (state.checkoutSnack === 'coffee') snackPrice = 40;
+    else if (state.checkoutSnack === 'granola') snackPrice = 30;
+    
+    const grandTotal = subtotal + fee + snackPrice;
+    
+    const summaryTotalEl = document.getElementById('checkout-summary-total');
+    if (summaryTotalEl) summaryTotalEl.innerText = `₹${grandTotal}`;
+    
+    return grandTotal;
+}
+
+
 // --- Checkout Logic ---
 function openCheckoutModal() {
     if (state.cart.length === 0) {
@@ -1105,7 +1191,29 @@ function openCheckoutModal() {
     document.getElementById('checkout-name').value = state.profile.name || '';
     document.getElementById('checkout-mobile').value = state.profile.phone || '';
 
+    // Reset checkout parameters
+    state.checkoutPaymentMode = 'gateway';
+    state.checkoutSnack = 'none';
+    
+    const noneRadio = document.querySelector('input[name="late-night-snack"][value="none"]');
+    if (noneRadio) noneRadio.checked = true;
+    
+    document.querySelectorAll('.pay-method-card').forEach(card => {
+        card.classList.remove('active');
+        card.style.borderColor = 'transparent';
+    });
+    
+    const gatewayCard = document.getElementById('pay-mode-gateway');
+    if (gatewayCard) {
+        gatewayCard.classList.add('active');
+        gatewayCard.style.borderColor = 'var(--primary-teal)';
+    }
+
+    // Update wallet balance UI displays
+    saveWalletBalance();
+
     document.getElementById('checkout-modal').classList.add('active');
+    updateCheckoutTotal();
 }
 
 
@@ -1128,47 +1236,69 @@ async function confirmOrder(e) {
         return;
     }
 
-
-    // Validation: Min Order ₹100
     const subtotal = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-    if (subtotal < 100) {
-        document.getElementById('checkout-min-notice').style.display = 'block';
+    const checkoutTotal = updateCheckoutTotal();
 
-        // Error Prevention Wobble & Soft Guide
-        const widgets = [
-            document.getElementById('quick-addons-widget'),
-            document.getElementById('mobile-quick-addons-widget')
-        ];
+    if (state.checkoutPaymentMode === 'gateway') {
+        // Validation: Min Order ₹100 for gateway payments
+        if (subtotal < 100) {
+            document.getElementById('checkout-min-notice').style.display = 'block';
 
-        widgets.forEach(w => {
-            if (w) {
-                w.classList.add('wobble-active');
-                setTimeout(() => w.classList.remove('wobble-active'), 600);
-            }
-        });
+            // Error Prevention Wobble & Soft Guide
+            const widgets = [
+                document.getElementById('quick-addons-widget'),
+                document.getElementById('mobile-quick-addons-widget')
+            ];
 
-        const needed = 100 - subtotal;
-        showToast(`Please add ₹${needed} more to meet the ₹100 minimum. Quick add-ons suggested in cart!`);
-        closeCheckoutModal();
-        return;
+            widgets.forEach(w => {
+                if (w) {
+                    w.classList.add('wobble-active');
+                    setTimeout(() => w.classList.remove('wobble-active'), 600);
+                }
+            });
+
+            const needed = 100 - subtotal;
+            showToast(`Please add ₹${needed} more to meet the ₹100 minimum. Quick add-ons suggested in cart!`);
+            closeCheckoutModal();
+            return;
+        } else {
+            document.getElementById('checkout-min-notice').style.display = 'none';
+        }
     } else {
+        // PrintLab Student Wallet has NO minimum order requirement!
         document.getElementById('checkout-min-notice').style.display = 'none';
+        
+        if (state.walletBalance < checkoutTotal) {
+            showToast(`Insufficient balance in Student Wallet! You have ₹${state.walletBalance.toFixed(2)}, but need ₹${checkoutTotal.toFixed(2)}. Top up in settings or pay via UPI.`);
+            return;
+        }
     }
 
-    // Instead of creating order, go to payment
+    // Set checkout details
     state.checkoutData = {
         customerName: nameInput,
         customerMobile: mobileInput,
-        total: calculateTotalValue()
+        total: checkoutTotal
     };
 
     closeCheckoutModal();
-    openPaymentModal();
+
+    if (state.checkoutPaymentMode === 'gateway') {
+        openPaymentModal();
+    } else {
+        // Pay directly and instantly via Wallet
+        state.walletBalance -= checkoutTotal;
+        saveWalletBalance();
+        
+        showToast("Processing Wallet Payment...");
+        setTimeout(async () => {
+            await finalSubmitOrder();
+        }, 1200);
+    }
 }
 
 function calculateTotalValue() {
-    const subtotal = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-    return subtotal + (subtotal > 0 ? 10 : 0);
+    return updateCheckoutTotal();
 }
 
 function openPaymentModal() {
@@ -1239,7 +1369,15 @@ async function finalSubmitOrder() {
 
     // Spawn 10s Floating Undo Send banner
     triggerUndoSendBanner(state.currentOrderId);
-    showToast("Print job submitted! You have 10s to undo.");
+    
+    let snackMsg = "";
+    if (state.checkoutSnack === 'coffee') {
+        snackMsg = " Late-Night Espresso Coffee will dispense at the kiosk!";
+    } else if (state.checkoutSnack === 'granola') {
+        snackMsg = " Energy Granola Bar will dispense at the kiosk!";
+    }
+    
+    showToast(`Print job submitted!${snackMsg} You have 10s to undo.`);
 }
 
 function triggerUndoSendBanner(orderId) {
@@ -1378,12 +1516,12 @@ async function triggerStatusAnimation() {
 
     const progressBar = document.getElementById('status-progress-bar');
     const statusText = document.getElementById('status-text');
-    const trackingHeading = document.querySelector('#status-screen h2');
+    const trackingHeading = document.getElementById('tracking-calm-heading');
     const cancelBtn = document.getElementById('cancel-order-container');
 
     if (trackingHeading) {
         const studentName = (state.profile && state.profile.name) ? state.profile.name : 'Student';
-        trackingHeading.innerHTML = `Breathe, ${studentName}.<br>Your deadline is safe with us.`;
+        trackingHeading.innerHTML = `Breathe, ${studentName}. Your print is safe.`;
     }
 
     // Start Breathing Label Cycle (Soundarya Bodh)
@@ -1398,55 +1536,93 @@ async function triggerStatusAnimation() {
         }, 4000);
     }
 
-    // Reset
+    // Reset progress styles
     if (progressBar) {
         progressBar.style.width = '0%';
         progressBar.style.background = 'var(--primary-teal)';
     }
-    if (statusText) statusText.innerText = "Order Placed - Relax, we are preparing your prints.";
-    if (cancelBtn) cancelBtn.style.display = 'block';
+    if (statusText) statusText.innerText = "Queued - Breathe easy, your deadline is safe with us.";
+    if (cancelBtn) cancelBtn.style.display = 'none'; // Only Gmail-style 10s undo permitted!
 
     if (state.currentOrderId) {
-        try {
-            const response = await fetch(`${API_BASE_URL}/orders/${state.currentOrderId}`);
-            if (response.ok) {
-                const data = await response.json();
-                console.log('Order status fetched:', data.status);
+        if (state.statusCountdownInterval) clearInterval(state.statusCountdownInterval);
 
-                let displayStatus = data.status;
-                if (displayStatus === 'Placed' || displayStatus === 'Pending') {
-                    const createdAt = data.created_at || data.createdAt;
-                    if (createdAt) {
-                        const ageMinutes = (Date.now() - new Date(createdAt).getTime()) / (1000 * 60);
-                        if (ageMinutes >= 20) {
-                            console.log(`Order is ${ageMinutes.toFixed(1)} mins old. Automatically treating as Completed.`);
-                            displayStatus = 'Completed';
+        const fetchAndUpdateStatus = async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/orders/${state.currentOrderId}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    let displayStatus = data.status;
+                    const createdAtStr = data.created_at || data.createdAt || new Date().toISOString();
+                    const createdAt = new Date(createdAtStr).getTime();
+                    
+                    const ageSeconds = (Date.now() - createdAt) / 1000;
+                    const ageMinutes = ageSeconds / 60;
+                    
+                    if ((displayStatus === 'Placed' || displayStatus === 'Pending') && ageMinutes >= 20) {
+                        displayStatus = 'Completed';
+                    }
+                    
+                    const estTotalSeconds = 240; // 4 minutes exactly
+                    const remainingSeconds = Math.max(0, estTotalSeconds - ageSeconds);
+                    const minutesLeft = Math.floor(remainingSeconds / 60);
+                    const secondsLeft = Math.floor(remainingSeconds % 60);
+                    
+                    const giantTimeEl = document.getElementById('tracking-est-time-giant');
+                    const textTimeEl = document.getElementById('tracking-est-time');
+                    
+                    if (displayStatus === 'Cancelled') {
+                        if (statusText) statusText.innerText = "Order Cancelled";
+                        if (progressBar) {
+                            progressBar.style.width = '100%';
+                            progressBar.style.background = 'var(--accent-coral)';
+                        }
+                        if (giantTimeEl) giantTimeEl.innerHTML = `Cancelled`;
+                        if (textTimeEl) textTimeEl.innerText = "Your order was cancelled successfully.";
+                        if (state.statusCountdownInterval) clearInterval(state.statusCountdownInterval);
+                    } else if (displayStatus === 'Completed' || displayStatus === 'Ready' || remainingSeconds <= 0) {
+                        if (statusText) statusText.innerText = "Order is ready for pickup!";
+                        if (progressBar) {
+                            progressBar.style.width = '100%';
+                            progressBar.style.background = 'var(--primary-teal)';
+                        }
+                        if (giantTimeEl) giantTimeEl.innerHTML = `Ready!`;
+                        if (textTimeEl) textTimeEl.innerHTML = `<span style="color: #2e7d32; font-weight: 800;"><i class="fa-solid fa-circle-check"></i> Breathe. Your print is safe at the Central Kiosk! Please retrieve it securely.</span>`;
+                        if (state.statusCountdownInterval) clearInterval(state.statusCountdownInterval);
+                    } else {
+                        // Dynamically update countdown timer
+                        if (giantTimeEl) {
+                            giantTimeEl.innerHTML = `${minutesLeft}:${secondsLeft.toString().padStart(2, '0')}<span style="font-size: 1.2rem; font-weight: 700; color: var(--text-muted); margin-left: 0.15rem;">mins</span>`;
+                        }
+                        if (textTimeEl) {
+                            textTimeEl.innerText = `Your print will be ready at the Central Kiosk in exactly ${minutesLeft} minutes, ${secondsLeft} seconds.`;
+                        }
+                        
+                        // Dynamically increase progress bar based on elapsed time (up to 95% until completed)
+                        const elapsedPct = Math.min(95, Math.floor((ageSeconds / estTotalSeconds) * 100));
+                        if (progressBar) {
+                            progressBar.style.width = `${elapsedPct}%`;
+                        }
+                        
+                        if (statusText) {
+                            if (elapsedPct < 30) {
+                                statusText.innerText = "Queued - Securely routing your design file to Kiosk...";
+                            } else if (elapsedPct < 70) {
+                                statusText.innerText = "Printing - Single-kiosk rapid 2.5s/page laser printing active...";
+                            } else {
+                                statusText.innerText = "Sorting & Dispensing - Combining fuel items...";
+                            }
                         }
                     }
                 }
-
-                if (displayStatus === 'Cancelled') {
-                    if (statusText) statusText.innerText = "Order Cancelled";
-                    if (progressBar) {
-                        progressBar.style.width = '100%';
-                        progressBar.style.background = 'var(--accent-coral)';
-                    }
-                    if (cancelBtn) cancelBtn.style.display = 'none';
-                } else if (displayStatus === 'Completed' || displayStatus === 'Ready') {
-                    if (statusText) statusText.innerText = "Order is ready for pickup!";
-                    if (progressBar) progressBar.style.width = '100%';
-                    if (cancelBtn) cancelBtn.style.display = 'none';
-                } else {
-                    // Default packing animation if not cancelled or completed
-                    setTimeout(() => {
-                        if (progressBar) progressBar.style.width = '33%';
-                        if (statusText) statusText.innerText = "Processing - Breathe easy, your deadline is safe with us.";
-                    }, 500);
-                }
+            } catch (err) {
+                console.warn('Failed to fetch status', err);
             }
-        } catch (err) {
-            console.warn('Failed to fetch status', err);
-        }
+        };
+
+        // Run immediately and then start interval
+        await fetchAndUpdateStatus();
+        state.statusCountdownInterval = setInterval(fetchAndUpdateStatus, 1000);
     }
 }
 

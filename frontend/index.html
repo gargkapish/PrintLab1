@@ -66,22 +66,41 @@
             
             <!-- Home Screen -->
             <div id="home-screen" class="screen active">
-                <div class="bento-hero">
-                    <div class="bento-tile bento-main">
-                        <div class="bento-label" style="color: rgba(255,255,255,0.7);"><i class="fa-solid fa-shield-halved"></i> Campus Exclusive &bull; Secure Local Kiosks</div>
-                        <h1>Rush Printing,<br>Simplified.</h1>
-                        <p style="margin-top: 1rem; opacity: 0.8; font-weight: 600;">Securely routed to localized campus kiosks for instant self-pickup.</p>
+                
+                <!-- Smart Kiosk HMI Live Monitor HUD (Visibility of System Status & Negative Space) -->
+                <div class="kiosk-hud-container" style="background: var(--white); border-radius: var(--global-radius); padding: 2.5rem; box-shadow: var(--shadow-premium); margin-bottom: 2.5rem; border-left: 5px solid var(--primary-teal);">
+                    <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.5rem;">
+                        <span class="status-indicator-dot" style="width: 10px; height: 10px; background: #2e7d32; border-radius: 50%; display: inline-block; animation: gentlePulse 2s infinite;"></span>
+                        <span style="font-weight: 800; font-size: 0.85rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em;">Central Hub Smart Kiosk • Live Monitor</span>
                     </div>
-                    <div class="bento-tile bento-secondary">
-                        <div class="bento-label">Live Capacity</div>
-                        <div class="bento-value">92% Operational</div>
-                        <div style="width: 100%; height: 6px; background: var(--bg-color); border-radius: 10px; margin-top: 1rem; overflow: hidden;">
-                            <div style="width: 92%; height: 100%; background: var(--primary-teal);"></div>
+                    
+                    <div class="kiosk-hud-grid" style="display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 3rem; align-items: center;">
+                        <div>
+                            <h2 style="font-size: 2rem; font-weight: 900; line-height: 1.2; color: var(--dark-teal); letter-spacing: -0.02em; margin: 0;">Single-Kiosk<br>Active.</h2>
+                            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.8rem; margin-bottom: 0; font-weight: 600; line-height: 1.4;">Located in the secure central campus hub for rapid, safe retrieval.</p>
+                        </div>
+                        
+                        <!-- Metric 1: Live Capacity -->
+                        <div style="padding-left: 2rem; border-left: 2px solid rgba(0,0,0,0.06); padding-top: 0.5rem; padding-bottom: 0.5rem;">
+                            <div class="bento-label" style="font-size: 0.8rem; letter-spacing: 0.05em; color: var(--primary-teal); font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase;">Live Capacity</div>
+                            <div class="bento-value" style="font-size: 2.2rem; font-weight: 900; color: var(--dark-teal); letter-spacing: -0.01em; margin: 0; line-height: 1;">98%<span style="font-size: 1rem; font-weight: 700; color: var(--text-muted); margin-left: 0.3rem;">Operational</span></div>
+                            <p style="font-size: 0.75rem; color: #2e7d32; font-weight: 700; margin-top: 0.5rem; margin-bottom: 0;"><i class="fa-solid fa-bolt"></i> 2.5s/page ultra-speed active</p>
+                        </div>
+                        
+                        <!-- Metric 2: Est. Queue -->
+                        <div style="padding-left: 2rem; border-left: 2px solid rgba(0,0,0,0.06); padding-top: 0.5rem; padding-bottom: 0.5rem;">
+                            <div class="bento-label" style="font-size: 0.8rem; letter-spacing: 0.05em; color: var(--primary-teal); font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase;">Est. Queue</div>
+                            <div class="bento-value" style="font-size: 2.2rem; font-weight: 900; color: var(--dark-teal); letter-spacing: -0.01em; margin: 0; line-height: 1;">~4<span style="font-size: 1.2rem; font-weight: 700; color: var(--text-muted); margin-left: 0.2rem;">mins</span></div>
+                            <p style="font-size: 0.75rem; color: var(--primary-teal); font-weight: 700; margin-top: 0.5rem; margin-bottom: 0;"><i class="fa-solid fa-clock"></i> Only 1 job ahead</p>
                         </div>
                     </div>
-                    <div class="bento-tile bento-secondary">
-                        <div class="bento-label">Est. Queue</div>
-                        <div class="bento-value">~14 Mins</div>
+                </div>
+
+                <div class="bento-hero" style="margin-bottom: 2.5rem; grid-template-rows: auto; grid-template-columns: 1fr;">
+                    <div class="bento-tile bento-main" style="grid-row: span 1; padding: 2.5rem; display: flex; flex-direction: column; justify-content: center;">
+                        <div class="bento-label" style="color: rgba(255,255,255,0.7);"><i class="fa-solid fa-shield-halved"></i> Campus Exclusive &bull; Secure Local Kiosks</div>
+                        <h1 style="font-size: 2.5rem; font-weight: 900; line-height: 1.1; margin-top: 0.5rem; margin-bottom: 0; color: var(--white);">Rush Printing,<br>Simplified.</h1>
+                        <p style="margin-top: 1rem; margin-bottom: 0; opacity: 0.9; font-weight: 600; font-size: 1.05rem;">Securely routed to localized campus kiosks for instant self-pickup.</p>
                     </div>
                 </div>
 
@@ -137,10 +156,21 @@
                             <div class="breathe-label">Breathe In...</div>
                         </div>
 
-                        <h2 id="tracking-calm-heading" style="font-weight: 800; font-size: 1.45rem; line-height: 1.4; color: var(--text-dark); margin-top: 2rem;">
-                            Breathe. Your deadline is safe with us.
+                        <h2 id="tracking-calm-heading" style="font-weight: 800; font-size: 1.5rem; line-height: 1.4; color: var(--text-dark); margin-top: 2rem;">
+                            Breathe. Your print is safe.
                         </h2>
-                        <p id="tracking-est-time" style="color: var(--text-muted); margin-top: 0.5rem; font-weight: 600; font-size: 0.95rem;">Est. completion: 15 mins</p>
+
+                        <!-- Visual Countdown Card (Emphasis & Contrast) -->
+                        <div class="countdown-card" style="margin: 2rem auto; background: var(--bg-color); border: 2px solid var(--primary-teal); padding: 1.5rem; border-radius: 20px; max-width: 250px; box-shadow: var(--shadow-premium); text-align: center;">
+                            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 800; letter-spacing: 0.08em; margin-bottom: 0.5rem;">Estimated Ready In</div>
+                            <div id="tracking-est-time-giant" style="font-size: 3.2rem; font-weight: 900; color: var(--primary-teal); letter-spacing: -0.02em; line-height: 1; animation: gentlePulse 2s infinite ease-in-out;">
+                                4<span style="font-size: 1.4rem; font-weight: 700; color: var(--text-muted); margin-left: 0.15rem;">mins</span>
+                            </div>
+                        </div>
+                        
+                        <p id="tracking-est-time" style="color: var(--text-muted); font-weight: 700; font-size: 0.95rem; line-height: 1.4; margin-top: 1rem;">
+                            Your print will be ready at the Central Kiosk in exactly 4 minutes.
+                        </p>
                         
                         <div style="margin-top: 2.5rem;">
                             <div class="progress-bar-bg" style="height: 12px; border-radius: 6px;">
@@ -218,6 +248,23 @@
                             </div>
                         </div>
                         <button class="btn-checkout" style="margin-top: 2rem; max-width: 150px; background: transparent; border: 2px solid var(--primary-teal); color: var(--primary-teal);" onclick="showToast('Profile editing coming soon!')">Edit Profile</button>
+                    </div>
+
+                    <div class="bento-tile" style="margin-bottom: 2rem;">
+                        <h3 style="margin-bottom: 1rem; font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem; color: var(--primary-teal);">
+                            <i class="fa-solid fa-wallet"></i> PrintLab Student Wallet
+                        </h3>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+                            Bypass the ₹100 minimum order requirement entirely by paying with your campus wallet.
+                        </p>
+                        <div style="background: var(--bg-color); padding: 1.5rem; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <span style="font-weight: 700; color: var(--text-dark);">Wallet Balance</span>
+                            <span id="settings-wallet-bal" style="font-size: 1.5rem; font-weight: 900; color: var(--primary-teal);">₹150.00</span>
+                        </div>
+                        <div style="display: flex; gap: 1rem;">
+                            <button class="btn-checkout" style="flex: 1; padding: 0.8rem;" onclick="topUpWallet(50)">+ ₹50 Top Up</button>
+                            <button class="btn-checkout" style="flex: 1; padding: 0.8rem;" onclick="topUpWallet(100)">+ ₹100 Top Up</button>
+                        </div>
                     </div>
 
 
@@ -304,7 +351,66 @@
                 <label>Mobile Number</label>
                 <input type="tel" id="checkout-mobile" class="form-control" placeholder="Enter mobile number">
             </div>
-            <div class="checkout-kiosk-info">
+            <!-- Select Payment Mode (SCAMPER - Eliminate min price via Student Wallet) -->
+            <div class="form-group" style="margin-top: 1.5rem;">
+                <label style="font-weight: 700; display: flex; align-items: center; gap: 0.5rem; color: var(--primary-teal); font-size: 0.95rem;">
+                    <i class="fa-solid fa-credit-card"></i> Select Payment Mode
+                </label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.6rem;">
+                    <div class="pay-method-card active" id="pay-mode-gateway" onclick="selectCheckoutPayMode('gateway')" style="padding: 1rem; border: 2px solid var(--primary-teal); border-radius: 12px; cursor: pointer; text-align: center; background: var(--white); box-shadow: var(--shadow-premium); transition: all 0.2s;">
+                        <i class="fa-solid fa-building-columns" style="font-size: 1.25rem; color: var(--primary-teal); margin-bottom: 0.5rem; display: block;"></i>
+                        <span style="font-weight: 700; font-size: 0.85rem;">UPI / Cards</span>
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.3rem; margin-bottom: 0; font-weight: 600;">Min. ₹100 applies</p>
+                    </div>
+                    <div class="pay-method-card" id="pay-mode-wallet" onclick="selectCheckoutPayMode('wallet')" style="padding: 1rem; border: 2px solid transparent; border-radius: 12px; cursor: pointer; text-align: center; background: var(--bg-color); position: relative; transition: all 0.2s;">
+                        <div style="position: absolute; top: -8px; right: -5px; background: var(--accent-coral); color: white; font-size: 0.6rem; font-weight: 800; padding: 0.2rem 0.5rem; border-radius: 10px; box-shadow: 0 2px 5px rgba(255,90,54,0.3);">NO MINIMUM</div>
+                        <i class="fa-solid fa-wallet" style="font-size: 1.25rem; color: var(--text-muted); margin-bottom: 0.5rem; display: block;"></i>
+                        <span style="font-weight: 700; font-size: 0.85rem;">Student Wallet</span>
+                        <p id="checkout-wallet-bal" style="font-size: 0.75rem; color: var(--primary-teal); font-weight: 700; margin-top: 0.3rem; margin-bottom: 0;">Bal: ₹150.00</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Combine Late-Night Fuel (SCAMPER - Combine snacks in HMI) -->
+            <div class="form-group" style="margin-top: 1.5rem;">
+                <label style="font-weight: 700; display: flex; align-items: center; gap: 0.5rem; color: var(--primary-teal); font-size: 0.95rem;">
+                    <i class="fa-solid fa-mug-hot"></i> Late-Night Fuel Add-on (Dispense at Kiosk)
+                </label>
+                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem; margin-bottom: 0.6rem; font-weight: 600;">Combine your prints with essential fuel from the same kiosk dispenser:</p>
+                <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+                    <label class="snack-option-row" style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-color); padding: 0.8rem 1rem; border-radius: 10px; cursor: pointer; border: 1px solid rgba(0,0,0,0.05); margin: 0; transition: all 0.2s;">
+                        <div style="display: flex; align-items: center; gap: 0.8rem;">
+                            <input type="radio" name="late-night-snack" value="none" checked onchange="updateCheckoutTotal()" style="accent-color: var(--primary-teal); width: 16px; height: 16px; margin: 0;">
+                            <span style="font-weight: 700; font-size: 0.9rem;">No Add-on Fuel</span>
+                        </div>
+                    </label>
+                    <label class="snack-option-row" style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-color); padding: 0.8rem 1rem; border-radius: 10px; cursor: pointer; border: 1px solid rgba(0,0,0,0.05); margin: 0; transition: all 0.2s;">
+                        <div style="display: flex; align-items: center; gap: 0.8rem;">
+                            <input type="radio" name="late-night-snack" value="coffee" onchange="updateCheckoutTotal()" style="accent-color: var(--primary-teal); width: 16px; height: 16px; margin: 0;">
+                            <span style="font-weight: 700; font-size: 0.9rem;">Late-Night Hot Espresso Coffee</span>
+                        </div>
+                        <span style="color: var(--primary-teal); font-weight: 800; font-size: 0.9rem;">+₹40</span>
+                    </label>
+                    <label class="snack-option-row" style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-color); padding: 0.8rem 1rem; border-radius: 10px; cursor: pointer; border: 1px solid rgba(0,0,0,0.05); margin: 0; transition: all 0.2s;">
+                        <div style="display: flex; align-items: center; gap: 0.8rem;">
+                            <input type="radio" name="late-night-snack" value="granola" onchange="updateCheckoutTotal()" style="accent-color: var(--primary-teal); width: 16px; height: 16px; margin: 0;">
+                            <span style="font-weight: 700; font-size: 0.9rem;">Energy Granola Bar</span>
+                        </div>
+                        <span style="color: var(--primary-teal); font-weight: 800; font-size: 0.9rem;">+₹30</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Dynamic Checkout Summary -->
+            <div style="margin-top: 1.5rem; padding: 1.2rem; background: var(--bg-color); border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px dashed rgba(2,128,144,0.3);">
+                <div>
+                    <span style="font-weight: 700; font-size: 0.95rem; display: block; color: var(--text-dark);">Total Checkout Cost</span>
+                    <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Includes combined fuel snacks</span>
+                </div>
+                <span id="checkout-summary-total" style="font-size: 1.6rem; font-weight: 900; color: var(--primary-teal);">₹0</span>
+            </div>
+
+            <div class="checkout-kiosk-info" style="margin-top: 1.5rem;">
                 <i class="fa-solid fa-shield-halved"></i>
                 <span>Your order is routed securely to the nearest localized campus kiosk. Retrieve instantly upon arrival.</span>
             </div>
@@ -357,10 +463,15 @@
             <div class="logo" style="margin-bottom: 2rem;">PrintLab</div>
             <h2 style="margin-bottom: 1rem;">Welcome Back</h2>
             <p style="color: var(--text-muted); margin-bottom: 2.5rem;">Please log in to continue with campus printing.</p>
-            <button class="btn-checkout" onclick="loginWithGoogle(event)" style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
+            <button class="btn-checkout" onclick="loginWithGoogle(event)" style="display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 1.5rem;">
                 <i class="fa-brands fa-google"></i>
                 Continue with Google
             </button>
+            <div style="margin-top: 1rem;">
+                <span style="color: var(--primary-teal); font-weight: 700; cursor: pointer; display: inline-block; padding: 0.8rem 1.5rem; border: 2px solid var(--primary-teal); border-radius: 30px; font-size: 0.9rem; transition: all 0.2s ease-in-out; background: transparent; text-transform: uppercase; letter-spacing: 0.05em;" onclick="bypassAuthAsGuest()" onmouseover="this.style.background='rgba(2,128,144,0.05)'" onmouseout="this.style.background='transparent'">
+                    <i class="fa-solid fa-user-astronaut"></i> Guest Checkout (Skip for Now)
+                </span>
+            </div>
 
         </div>
     </div>

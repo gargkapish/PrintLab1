@@ -325,6 +325,21 @@ body.dark-mode::before {
     .bento-main h1 {
         font-size: 2rem;
     }
+
+    .kiosk-hud-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+    }
+    .kiosk-hud-grid > div {
+        border-left: none !important;
+        padding-left: 0 !important;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        padding-bottom: 1rem;
+    }
+    .kiosk-hud-grid > div:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
 }
 
 .bento-secondary {
@@ -692,11 +707,25 @@ body.dark-mode::before {
     padding: 2.5rem;
     border-radius: var(--global-radius);
     width: 90%;
-    max-width: 400px;
+    max-width: 450px;
+    max-height: 90vh;
+    overflow-y: auto;
     box-shadow: var(--shadow-float);
     transform: scale(0.9);
     transition: var(--spring-transition);
     position: relative;
+    scrollbar-width: thin;
+}
+
+.modal-content::-webkit-scrollbar {
+    width: 6px;
+}
+.modal-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+.modal-content::-webkit-scrollbar-thumb {
+    background: rgba(2,128,144,0.15);
+    border-radius: 10px;
 }
 
 .modal-overlay.active .modal-content {
@@ -920,12 +949,30 @@ body.dark-mode::before {
     font-size: 0.75rem;
     font-weight: 800;
     text-transform: uppercase;
+    display: inline-block;
+    letter-spacing: 0.05em;
 }
 
-.status-placed { background: #e3f2fd; color: #1976d2; }
-.status-packed { background: #fff3e0; color: #f57c00; }
-.status-completed { background: #e8f5e9; color: #2e7d32; }
-.status-cancelled { background: #ffebee; color: #c62828; }
+.status-placed, .status-pending { 
+    background: rgba(2, 128, 144, 0.08); 
+    color: var(--primary-teal); 
+    border: 1.5px solid rgba(2, 128, 144, 0.25); 
+}
+.status-packed, .status-processing, .status-queue { 
+    background: rgba(186, 117, 23, 0.08); 
+    color: #b76a0d; 
+    border: 1.5px solid rgba(186, 117, 23, 0.25); 
+}
+.status-ready, .status-completed { 
+    background: rgba(46, 125, 50, 0.08); 
+    color: #2e7d32; 
+    border: 1.5px solid rgba(46, 125, 50, 0.25); 
+}
+.status-cancelled { 
+    background: rgba(216, 90, 48, 0.08); 
+    color: var(--accent-coral); 
+    border: 1.5px solid rgba(216, 90, 48, 0.25); 
+}
 
 .btn-reorder {
     padding: 0.5rem 1rem;
