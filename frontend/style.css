@@ -305,7 +305,7 @@ body.dark-mode::before {
 .bento-main {
     grid-row: span 2;
     background: linear-gradient(135deg, var(--primary-teal), var(--dark-teal));
-    color: var(--white);
+    color: #ffffff;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -328,12 +328,19 @@ body.dark-mode::before {
 
     /* Smart Kiosk HUD Mobile Grid: side-by-side metrics */
     .kiosk-hud-container {
-        padding: 1.25rem 1.5rem !important;
+        padding: 1.25rem 1.25rem !important;
         margin-bottom: 1.5rem !important;
+    }
+    .kiosk-hud-container h2 {
+        font-size: 1.5rem !important;
+    }
+    .kiosk-hud-container span[style*="font-weight: 800"] {
+        font-size: 0.7rem !important;
+        letter-spacing: 0.02em !important;
     }
     .kiosk-hud-grid {
         grid-template-columns: 1fr 1fr !important;
-        gap: 1rem !important;
+        gap: 0.75rem !important;
     }
     /* Hide the text block to let metrics stand out on mobile */
     .kiosk-hud-grid > div:first-child {
@@ -344,15 +351,39 @@ body.dark-mode::before {
         border-left: none !important;
         padding-left: 0 !important;
         border-right: 1px solid rgba(0,0,0,0.08) !important;
-        padding-right: 1rem !important;
+        padding-right: 0.75rem !important;
         border-bottom: none !important;
         padding-bottom: 0 !important;
     }
     .kiosk-hud-grid > div:nth-child(3) {
         border-left: none !important;
-        padding-left: 1rem !important;
+        padding-left: 0.75rem !important;
         border-bottom: none !important;
         padding-bottom: 0 !important;
+    }
+
+    body.dark-mode .kiosk-hud-grid > div:nth-child(2) {
+        border-right-color: rgba(255,255,255,0.08) !important;
+    }
+
+    .kiosk-hud-grid .bento-value {
+        font-size: 1.8rem !important;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.1rem;
+    }
+    .kiosk-hud-grid .bento-value span {
+        font-size: 0.75rem !important;
+        margin-left: 0 !important;
+        display: block;
+        font-weight: 700;
+        opacity: 0.8;
+    }
+    .kiosk-hud-grid p {
+        font-size: 0.65rem !important;
+        line-height: 1.3 !important;
+        margin-top: 0.4rem !important;
     }
 
     /* Horizontal scroll for category filters on mobile */
@@ -363,10 +394,11 @@ body.dark-mode::before {
         flex-wrap: nowrap !important;
         padding: 0.25rem 0.1rem !important;
         justify-content: flex-start !important;
-        scrollbar-width: none; /* Hide scrollbar on Firefox */
+        scrollbar-width: none;  /* Firefox */
+        -ms-overflow-style: none;  /* IE and Edge */
     }
     .categories-container::-webkit-scrollbar {
-        display: none; /* Hide scrollbar on Chrome/Safari */
+        display: none; /* Hide chrome scrollbar track */
     }
     
     /* Convert hexagon badges to clean horizontal scrolling pills on mobile */
@@ -1473,4 +1505,166 @@ body.dark-mode {
     font-weight: 700 !important;
     font-size: 1rem !important;
     letter-spacing: -0.01em !important;
+}
+
+/* --- Global Logo Styles --- */
+.logo {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--primary-teal);
+    letter-spacing: -0.5px;
+    cursor: pointer;
+    transition: var(--spring-transition);
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}
+
+/* --- Mobile View Enhancements (Only applied on mobile viewports) --- */
+@media (max-width: 1023px) {
+    /* Subtle dark mode background pattern opacity reduction for premium look */
+    body.dark-mode::before {
+        opacity: 0.12 !important;
+    }
+
+    /* Additional spacing at bottom of content to accommodate floating bottom nav */
+    .app-container {
+        padding-bottom: 100px !important;
+    }
+
+    /* Floating Pill-Style Bottom Navigation */
+    .bottom-nav {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        right: 20px;
+        height: 60px;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 0 10px;
+        z-index: 999;
+        transition: var(--spring-transition), background 0.3s ease;
+    }
+
+    body.dark-mode .bottom-nav {
+        background: rgba(27, 38, 37, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .nav-item-mobile {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted);
+        font-size: 1.15rem;
+        cursor: pointer;
+        transition: var(--spring-transition);
+    }
+
+    .nav-item-mobile.active {
+        background: var(--primary-teal);
+        color: #ffffff !important;
+        box-shadow: 0 4px 12px rgba(2, 128, 144, 0.3);
+        transform: scale(1.1);
+    }
+
+    .nav-item-mobile:active {
+        transform: scale(0.95);
+    }
+
+    /* Floating Sticky Cart Preview Bar */
+    .mobile-cart-preview {
+        position: fixed;
+        bottom: 95px; /* Perfect stack height above floating bottom nav */
+        left: 20px;
+        right: 20px;
+        height: 56px;
+        background: linear-gradient(135deg, var(--color-critical), var(--color-critical-hover));
+        box-shadow: 0 10px 25px rgba(255, 90, 54, 0.35);
+        border-radius: 28px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
+        z-index: 998;
+        color: #ffffff;
+        cursor: pointer;
+        transform: translateY(150%);
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .mobile-cart-preview.active {
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .mobile-cart-preview:hover {
+        transform: translateY(-2px) scale(1.02);
+    }
+
+    .mobile-cart-preview:active {
+        transform: scale(0.98);
+    }
+}
+
+/* --- Product Details Mobile Flex Stack vs Desktop --- */
+.product-detail-flex {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.detail-img-large {
+    width: 100%;
+    height: 200px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #E1F5EE;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-premium);
+    transition: var(--spring-transition);
+}
+
+.detail-img-large i {
+    font-size: 3.5rem;
+    color: var(--primary-teal);
+}
+
+body.dark-mode .detail-img-large {
+    background: #1b3b38;
+}
+
+@media (min-width: 768px) {
+    .product-detail-flex {
+        flex-direction: row;
+        gap: 3rem;
+        align-items: flex-start;
+    }
+    
+    .detail-img-large {
+        flex: 1;
+        max-width: 400px;
+        height: 300px;
+    }
+    
+    .detail-info {
+        flex: 1.2;
+    }
 }

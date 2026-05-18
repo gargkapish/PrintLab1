@@ -420,6 +420,8 @@ function showScreen(screenId) {
     } else if (screenId === 'transactions') {
         fetchUserOrders();
     }
+
+    updateMobileCartPreview();
 }
 
 
@@ -950,6 +952,7 @@ function updateCartUI() {
     renderCartItems('mobile-cart-items');
 
     calculateTotals();
+    updateMobileCartPreview();
 }
 
 function renderCartItems(containerId) {
@@ -1758,3 +1761,34 @@ async function reorderItems(orderId) {
         showToast("Failed to re-order items.");
     }
 }
+
+function updateMobileCartPreview() {
+    const mobilePreview = document.getElementById('mobile-cart-preview');
+    if (!mobilePreview) return;
+
+    const isMobile = window.innerWidth < 1024;
+    const totalItems = state.cart.reduce((sum, item) => sum + item.qty, 0);
+
+    if (isMobile && totalItems > 0 && state.currentScreen !== 'cart' && state.currentScreen !== 'status') {
+        const subtotal = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        mobilePreview.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 0.8rem;">
+                <div style="background: rgba(255, 255, 255, 0.2); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem;">
+                    <i class="fa-solid fa-bag-shopping" style="color: #ffffff;"></i>
+                </div>
+                <div style="text-align: left;">
+                    <div style="font-weight: 800; font-size: 0.95rem; line-height: 1.1; color: #ffffff;">₹${subtotal}</div>
+                    <div style="font-size: 0.75rem; opacity: 0.9; font-weight: 600; color: #ffffff;">${totalItems} ${totalItems === 1 ? 'item' : 'items'} in cart</div>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.4rem; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: #ffffff;">
+                View Cart <i class="fa-solid fa-arrow-right" style="font-size: 0.8rem;"></i>
+            </div>
+        `;
+        mobilePreview.classList.add('active');
+    } else {
+        mobilePreview.classList.remove('active');
+    }
+}
+
+window.addEventListener('resize', updateMobileCartPreview);

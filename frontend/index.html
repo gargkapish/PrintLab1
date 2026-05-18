@@ -141,7 +141,7 @@
                 <div class="back-btn" onclick="showScreen('home')" style="cursor: pointer; margin-bottom: 2rem; font-weight: 700;">
                     <i class="fa-solid fa-chevron-left"></i> Back
                 </div>
-                <div class="detail-container" id="product-detail-content"></div>
+                <div class="detail-container product-detail-flex" id="product-detail-content"></div>
             </div>
 
             <!-- Order Status Screen -->
@@ -318,15 +318,20 @@
             </div>
         </aside>
 
+        <!-- Floating Cart Preview (Mobile Sticky Bar) -->
+        <div id="mobile-cart-preview" class="mobile-cart-preview" onclick="showScreen('cart')">
+            <!-- Dynamic content injected here -->
+        </div>
+
         <!-- Bottom Navigation (Mobile) -->
         <nav class="bottom-nav">
-            <div class="nav-item active" onclick="showScreen('home')" id="m-nav-home">
+            <div class="nav-item-mobile active" onclick="showScreen('home')" id="m-nav-home">
                 <i class="fa-solid fa-house"></i>
             </div>
-            <div class="nav-item" onclick="showScreen('transactions')" id="m-nav-transactions">
+            <div class="nav-item-mobile" onclick="showScreen('transactions')" id="m-nav-transactions">
                 <i class="fa-solid fa-receipt"></i>
             </div>
-            <div class="nav-item" onclick="showScreen('status')" id="m-nav-status">
+            <div class="nav-item-mobile" onclick="showScreen('status')" id="m-nav-status">
                 <i class="fa-solid fa-clock-rotate-left"></i>
             </div>
         </nav>
