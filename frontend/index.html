@@ -68,9 +68,9 @@
             <div id="home-screen" class="screen active">
                 <div class="bento-hero">
                     <div class="bento-tile bento-main">
-                        <div class="bento-label" style="color: rgba(255,255,255,0.7);">Campus Exclusive</div>
+                        <div class="bento-label" style="color: rgba(255,255,255,0.7);"><i class="fa-solid fa-shield-halved"></i> Campus Exclusive &bull; Secure Local Kiosks</div>
                         <h1>Rush Printing,<br>Simplified.</h1>
-                        <p style="margin-top: 1rem; opacity: 0.8; font-weight: 600;">High-fidelity prints delivered in minutes.</p>
+                        <p style="margin-top: 1rem; opacity: 0.8; font-weight: 600;">Securely routed to localized campus kiosks for instant self-pickup.</p>
                     </div>
                     <div class="bento-tile bento-secondary">
                         <div class="bento-label">Live Capacity</div>
@@ -82,6 +82,14 @@
                     <div class="bento-tile bento-secondary">
                         <div class="bento-label">Est. Queue</div>
                         <div class="bento-value">~14 Mins</div>
+                    </div>
+                </div>
+
+                <div class="kiosk-banner">
+                    <i class="fa-solid fa-shield-halved kiosk-banner-icon"></i>
+                    <div class="kiosk-banner-content">
+                        <h4>Secure Localized Campus Kiosks</h4>
+                        <p>PrintLab operates via secure, localized kiosks placed inside academic and residential blocks. Print online and retrieve securely with your pickup ID.</p>
                     </div>
                 </div>
 
@@ -121,18 +129,28 @@
             <div id="status-screen" class="screen">
                 <!-- Tracking State -->
                 <div id="order-tracking-ui" style="display: none;">
-                    <div class="bento-tile" style="max-width: 600px; margin: 0 auto; text-align: center; padding: 4rem;">
-                        <h2>Tracking Order #PL-2024</h2>
-                        <p style="color: var(--text-muted); margin-top: 1rem;">Est. completion: 15 mins</p>
-                        <div style="margin-top: 3rem;">
-                            <div class="progress-bar-bg" style="height: 12px;">
-                                <div class="progress-bar-fill" id="status-progress-bar" style="width: 0%;"></div>
+                    <div class="bento-tile tracking-tile" style="max-width: 600px; margin: 0 auto; text-align: center; padding: 3rem 2rem;">
+                        
+                        <!-- Calming Breathing Circle (Soundarya Bodh) -->
+                        <div class="breathe-container">
+                            <div class="breathe-circle"></div>
+                            <div class="breathe-label">Breathe In...</div>
+                        </div>
+
+                        <h2 id="tracking-calm-heading" style="font-weight: 800; font-size: 1.45rem; line-height: 1.4; color: var(--text-dark); margin-top: 2rem;">
+                            Breathe. Your deadline is safe with us.
+                        </h2>
+                        <p id="tracking-est-time" style="color: var(--text-muted); margin-top: 0.5rem; font-weight: 600; font-size: 0.95rem;">Est. completion: 15 mins</p>
+                        
+                        <div style="margin-top: 2.5rem;">
+                            <div class="progress-bar-bg" style="height: 12px; border-radius: 6px;">
+                                <div class="progress-bar-fill" id="status-progress-bar" style="width: 0%; border-radius: 6px;"></div>
                             </div>
                         </div>
-                        <h3 style="margin-top: 2rem; color: var(--primary-teal);" id="status-text">Order Placed</h3>
-                        <div id="cancel-order-container" style="margin-top: 2rem;">
-                            <button class="btn-checkout" onclick="cancelCurrentOrder()" style="background: var(--accent-coral); max-width: 150px; margin: 0 auto; font-size: 0.9rem; padding: 0.8rem;">Cancel Order</button>
-                        </div>
+                        
+                        <h3 style="margin-top: 1.5rem; color: var(--primary-teal); font-weight: 800;" id="status-text">Order Placed</h3>
+                        
+
                     </div>
                 </div>
 
@@ -202,21 +220,7 @@
                         <button class="btn-checkout" style="margin-top: 2rem; max-width: 150px; background: transparent; border: 2px solid var(--primary-teal); color: var(--primary-teal);" onclick="showToast('Profile editing coming soon!')">Edit Profile</button>
                     </div>
 
-                    <div class="bento-tile" style="margin-bottom: 2rem;">
-                        <h3 style="margin-bottom: 1.5rem; font-size: 1.2rem;">Preferences</h3>
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid rgba(0,0,0,0.1);">
-                            <div>
-                                <h4 style="font-weight: 600;">Email Notifications</h4>
-                                <p style="font-size: 0.85rem; color: var(--text-muted);">Receive updates about your orders</p>
-                            </div>
-                            <div>
-                                <div class="toggle-switch" id="notif-toggle" onclick="toggleSetting('notif')">
-                                    <div class="toggle-dot"></div>
-                                </div>
-                            </div>
 
-                        </div>
-                    </div>
 
                     <div style="text-align: center; margin-top: 3rem;">
                         <p style="color: var(--accent-coral); font-weight: 600; cursor: pointer; display: inline-block; padding: 0.5rem 1rem;" onclick="logout()">Log Out</p>
@@ -241,8 +245,12 @@
                 </div>
             </div>
 
-            <div class="cart-items" id="desktop-cart-items">
-                <!-- Items injected here -->
+            <div class="cart-scroll-container" style="flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; padding-right: 4px;">
+                <div class="cart-items" id="desktop-cart-items" style="flex-grow: 0; overflow-y: visible; max-height: none;">
+                    <!-- Items injected here -->
+                </div>
+
+                <div id="desktop-quick-addons"></div>
             </div>
 
             <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--primary-teal); font-weight: 700; text-align: center; background: var(--bg-secondary); padding: 0.5rem; border-radius: 8px;">
@@ -295,6 +303,10 @@
             <div class="form-group">
                 <label>Mobile Number</label>
                 <input type="tel" id="checkout-mobile" class="form-control" placeholder="Enter mobile number">
+            </div>
+            <div class="checkout-kiosk-info">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Your order is routed securely to the nearest localized campus kiosk. Retrieve instantly upon arrival.</span>
             </div>
             <div id="checkout-min-notice" style="margin: 1rem 0; padding: 0.8rem; background: #fff5f5; color: #e53e3e; border-radius: 8px; font-size: 0.85rem; font-weight: 600; text-align: center; display: none;">
                 <i class="fa-solid fa-triangle-exclamation"></i> Min. order value is ₹100
