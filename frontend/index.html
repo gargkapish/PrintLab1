@@ -372,41 +372,11 @@
                 </div>
             </div>
 
-            <!-- Combine Late-Night Fuel (SCAMPER - Combine snacks in HMI) -->
-            <div class="form-group" style="margin-top: 1.5rem;">
-                <label style="font-weight: 700; display: flex; align-items: center; gap: 0.5rem; color: var(--primary-teal); font-size: 0.95rem;">
-                    <i class="fa-solid fa-mug-hot"></i> Late-Night Fuel Add-on (Dispense at Kiosk)
-                </label>
-                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem; margin-bottom: 0.6rem; font-weight: 600;">Combine your prints with essential fuel from the same kiosk dispenser:</p>
-                <div style="display: flex; flex-direction: column; gap: 0.6rem;">
-                    <label class="snack-option-row" style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-color); padding: 0.8rem 1rem; border-radius: 10px; cursor: pointer; border: 1px solid rgba(0,0,0,0.05); margin: 0; transition: all 0.2s;">
-                        <div style="display: flex; align-items: center; gap: 0.8rem;">
-                            <input type="radio" name="late-night-snack" value="none" checked onchange="updateCheckoutTotal()" style="accent-color: var(--primary-teal); width: 16px; height: 16px; margin: 0;">
-                            <span style="font-weight: 700; font-size: 0.9rem;">No Add-on Fuel</span>
-                        </div>
-                    </label>
-                    <label class="snack-option-row" style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-color); padding: 0.8rem 1rem; border-radius: 10px; cursor: pointer; border: 1px solid rgba(0,0,0,0.05); margin: 0; transition: all 0.2s;">
-                        <div style="display: flex; align-items: center; gap: 0.8rem;">
-                            <input type="radio" name="late-night-snack" value="coffee" onchange="updateCheckoutTotal()" style="accent-color: var(--primary-teal); width: 16px; height: 16px; margin: 0;">
-                            <span style="font-weight: 700; font-size: 0.9rem;">Late-Night Hot Espresso Coffee</span>
-                        </div>
-                        <span style="color: var(--primary-teal); font-weight: 800; font-size: 0.9rem;">+₹40</span>
-                    </label>
-                    <label class="snack-option-row" style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-color); padding: 0.8rem 1rem; border-radius: 10px; cursor: pointer; border: 1px solid rgba(0,0,0,0.05); margin: 0; transition: all 0.2s;">
-                        <div style="display: flex; align-items: center; gap: 0.8rem;">
-                            <input type="radio" name="late-night-snack" value="granola" onchange="updateCheckoutTotal()" style="accent-color: var(--primary-teal); width: 16px; height: 16px; margin: 0;">
-                            <span style="font-weight: 700; font-size: 0.9rem;">Energy Granola Bar</span>
-                        </div>
-                        <span style="color: var(--primary-teal); font-weight: 800; font-size: 0.9rem;">+₹30</span>
-                    </label>
-                </div>
-            </div>
-
             <!-- Dynamic Checkout Summary -->
             <div style="margin-top: 1.5rem; padding: 1.2rem; background: var(--bg-color); border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px dashed rgba(2,128,144,0.3);">
                 <div>
                     <span style="font-weight: 700; font-size: 0.95rem; display: block; color: var(--text-dark);">Total Checkout Cost</span>
-                    <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Includes combined fuel snacks</span>
+                    <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Includes convenience fee</span>
                 </div>
                 <span id="checkout-summary-total" style="font-size: 1.6rem; font-weight: 900; color: var(--primary-teal);">₹0</span>
             </div>

@@ -53,8 +53,7 @@ const state = {
     user: null,
     profile: null,
     walletBalance: localStorage.getItem('printlab_wallet') !== null ? parseFloat(localStorage.getItem('printlab_wallet')) : 150.00,
-    checkoutPaymentMode: 'gateway',
-    checkoutSnack: 'none'
+    checkoutPaymentMode: 'gateway'
 };
 
 
@@ -1138,7 +1137,7 @@ function calculateTotals() {
     }
 }
 
-// --- Student Wallet & Late-Night Snack Logic (SCAMPER Model) ---
+// --- Student Wallet Logic (SCAMPER Model) ---
 function saveWalletBalance() {
     localStorage.setItem('printlab_wallet', state.walletBalance.toString());
     
@@ -1172,19 +1171,12 @@ function selectCheckoutPayMode(mode) {
 }
 
 function updateCheckoutTotal() {
-    const selectedSnack = document.querySelector('input[name="late-night-snack"]:checked');
-    state.checkoutSnack = selectedSnack ? selectedSnack.value : 'none';
-    
     const subtotal = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
     
     // Frictionless HMI Discount: ₹0 convenience fee for Wallet payments (UPI/Card remains ₹10)
     const fee = state.checkoutPaymentMode === 'gateway' ? (subtotal > 0 ? 10 : 0) : 0;
     
-    let snackPrice = 0;
-    if (state.checkoutSnack === 'coffee') snackPrice = 40;
-    else if (state.checkoutSnack === 'granola') snackPrice = 30;
-    
-    const grandTotal = subtotal + fee + snackPrice;
+    const grandTotal = subtotal + fee;
     
     const summaryTotalEl = document.getElementById('checkout-summary-total');
     if (summaryTotalEl) summaryTotalEl.innerText = `₹${grandTotal}`;
@@ -1212,10 +1204,6 @@ function openCheckoutModal() {
 
     // Reset checkout parameters
     state.checkoutPaymentMode = 'gateway';
-    state.checkoutSnack = 'none';
-    
-    const noneRadio = document.querySelector('input[name="late-night-snack"][value="none"]');
-    if (noneRadio) noneRadio.checked = true;
     
     document.querySelectorAll('.pay-method-card').forEach(card => {
         card.classList.remove('active');
@@ -1389,14 +1377,7 @@ async function finalSubmitOrder() {
     // Spawn 10s Floating Undo Send banner
     triggerUndoSendBanner(state.currentOrderId);
     
-    let snackMsg = "";
-    if (state.checkoutSnack === 'coffee') {
-        snackMsg = " Late-Night Espresso Coffee will dispense at the kiosk!";
-    } else if (state.checkoutSnack === 'granola') {
-        snackMsg = " Energy Granola Bar will dispense at the kiosk!";
-    }
-    
-    showToast(`Print job submitted!${snackMsg} You have 10s to undo.`);
+    showToast(`Print job submitted! You have 10s to undo.`);
 }
 
 function triggerUndoSendBanner(orderId) {
